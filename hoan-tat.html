@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoàn tất Đơn hàng - HihoEdu</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0B132B',
+                        secondary: '#1C2541',
+                        accent: '#3A506B',
+                        cta: '#F59E0B',
+                        ctaHover: '#D97706'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+    
+    <!-- Header Minimal -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <!-- Top Bar -->
+        <div class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center">
+                    <img src="images/logo.jpg" alt="HihoEdu Logo" class="h-10 w-auto object-contain">
+                </a>
+                <span class="hidden md:block text-sm text-gray-500 border-l border-gray-300 pl-3">Nền tảng học tập toàn diện</span>
+            </div>
+            
+            <div class="flex-1 max-w-xl">
+                <div class="relative">
+                    <input type="text" placeholder="Tìm kiếm khóa học..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <a href="#" onclick="openCartModal(); return false;" class="flex items-center gap-2 text-primary hover:text-cta transition">
+                    <div class="relative">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span class="cart-badge absolute -top-2 -right-2 bg-cta text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold hidden">0</span>
+                    </div>
+                    <span class="hidden sm:inline font-medium">Giỏ hàng</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="bg-primary text-white relative z-40 shadow-md">
+            <div class="container mx-auto px-4 flex items-center">
+                
+                <!-- Category Dropdown -->
+                <div class="relative group">
+                    <button id="categoryBtn" class="flex items-center gap-2 bg-primary px-6 py-4 font-semibold hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-bars"></i>
+                        Danh mục
+                    </button>
+                    <!-- Mega Menu Content -->
+                    <div class="absolute top-full left-0 w-64 bg-white text-gray-800 shadow-xl rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <ul class="py-2 relative">
+                            <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-primary transition font-medium border-b border-gray-100" data-category="all"><i class="fa-solid fa-table-cells-large w-5 text-gray-400 text-center"></i> Tất cả khóa học</a></li>
+                            
+                            <!-- 2. Marketing -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-bullhorn w-5 text-gray-400 text-center"></i> Marketing</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="AI Marketing"><i class="fa-solid fa-robot text-gray-400 w-4 text-center"></i> AI Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Content Marketing"><i class="fa-solid fa-pen-to-square text-gray-400 w-4 text-center"></i> Content Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Digital Marketing"><i class="fa-solid fa-play text-gray-400 w-4 text-center"></i> Digital Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Brand Marketing"><i class="fa-solid fa-building text-gray-400 w-4 text-center"></i> Brand Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Facebook Marketing"><i class="fa-brands fa-facebook text-gray-400 w-4 text-center"></i> Facebook Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiktok Marketing"><i class="fa-brands fa-tiktok text-gray-400 w-4 text-center"></i> Tiktok Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Google Marketing"><i class="fa-brands fa-google text-gray-400 w-4 text-center"></i> Google Marketing</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 3. Thiết kế -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-pen-to-square w-5 text-gray-400 text-center"></i> Thiết kế - Biên tập video</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tư duy"><i class="fa-solid fa-lightbulb text-gray-400 w-4 text-center"></i> Tư duy thiết kế</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="2D"><i class="fa-solid fa-vector-square text-gray-400 w-4 text-center"></i> Thiết kế 2D</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="3D"><i class="fa-solid fa-cube text-gray-400 w-4 text-center"></i> Thiết kế 3D</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="UI/UX"><i class="fa-solid fa-mobile-screen text-gray-400 w-4 text-center"></i> UI/UX Design</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Quay dựng"><i class="fa-solid fa-video text-gray-400 w-4 text-center"></i> Quay dựng Video</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 4. AI -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-robot w-5 text-gray-400 text-center"></i> AI - Trí tuệ nhân tạo</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="ChatGPT">Ứng dụng ChatGPT</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Midjourney">Vẽ tranh Midjourney</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 5. Kinh doanh -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-briefcase w-5 text-gray-400 text-center"></i> Kinh doanh - Khởi nghiệp</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Khởi nghiệp">Khởi nghiệp</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Quản trị">Quản trị</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 6. IT -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-laptop-code w-5 text-gray-400 text-center"></i> IT - Công nghệ thông tin</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Web Frontend">Web Frontend</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Web Backend">Web Backend</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Mobile App">Mobile App</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 7. Tài chính - Đầu tư -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-chart-simple w-5 text-gray-400 text-center"></i> Tài chính - Đầu tư</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tư duy tài chính"><i class="fa-solid fa-money-bill-trend-up text-gray-400 w-4 text-center"></i> Tư duy tài chính</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư chứng khoán"><i class="fa-solid fa-chart-line text-gray-400 w-4 text-center"></i> Đầu tư chứng khoán</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư Crypto"><i class="fa-brands fa-bitcoin text-gray-400 w-4 text-center"></i> Đầu tư Crypto</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư khác"><i class="fa-solid fa-dollar-sign text-gray-400 w-4 text-center"></i> Đầu tư khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 8. Ngoại ngữ -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-language w-5 text-gray-400 text-center"></i> Ngoại ngữ</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Anh"><i class="fa-solid fa-a text-gray-400 w-4 text-center"></i> Tiếng Anh</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Trung"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Tiếng Trung</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Nhật"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Tiếng Nhật</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Ngôn ngữ khác"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Ngôn ngữ khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 9. Tin học văn phòng -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-brands fa-windows w-5 text-gray-400 text-center"></i> Tin học văn phòng</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Word"><i class="fa-solid fa-file-word text-gray-400 w-4 text-center"></i> Word</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Excel"><i class="fa-solid fa-file-excel text-gray-400 w-4 text-center"></i> Excel</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="PowerPoint"><i class="fa-solid fa-file-powerpoint text-gray-400 w-4 text-center"></i> PowerPoint</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Công cụ khác"><i class="fa-solid fa-file text-gray-400 w-4 text-center"></i> Công cụ khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 10. Kỹ năng mềm -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="Kỹ năng mềm">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-user-group w-5 text-gray-400 text-center"></i> Kỹ năng mềm</span>
+                                </div>
+                            </li>
+
+                            <!-- 11. MMO -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="MMO">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-money-check-dollar w-5 text-gray-400 text-center"></i> MMO - Kiếm tiền online</span>
+                                </div>
+                            </li>
+
+                            <!-- 12. Khóa học khác -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="Khóa học khác">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-file w-5 text-gray-400 text-center"></i> Khóa học khác</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Links -->
+                <ul class="hidden md:flex flex-1 items-center space-x-1 pl-6">
+                    <li><a href="index.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link filter-btn" data-category="all">Trang chủ</a></li>
+                    <li><a href="index.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link filter-btn" data-category="show-all">Khóa học</a></li>
+                    <li><a href="#" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link text-cta">Combo VIP</a></li>
+                    <li><a href="gioi-thieu.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link">Giới thiệu</a></li>
+                </ul>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- Order Content -->
+    <main class="flex-1 py-12 bg-white">
+        <div class="container mx-auto px-4 max-w-6xl space-y-8">
+            
+            <!-- Top Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left: QR Code -->
+                <div class="lg:col-span-5 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+                    <h2 class="text-xl font-bold text-primary mb-6">Mã QR chuyển khoản ngân hàng</h2>
+                    <div class="p-2 bg-white rounded-2xl shadow-md border-2 border-dashed border-gray-300 w-64 h-64 flex items-center justify-center">
+                        <img id="qrImage" src="" alt="QR Code" class="w-full h-full object-contain hidden">
+                        <div id="qrLoading" class="text-center text-gray-400">
+                            <i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i>
+                            <p class="text-sm">Đang tạo mã...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Success & Summary -->
+                <div class="lg:col-span-7 bg-gray-50 p-8 rounded-2xl border border-gray-100">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800">Cảm ơn bạn. Đơn hàng của bạn đã được nhận.</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center py-3 border-b border-gray-200 border-dashed">
+                            <span class="text-gray-500">Mã đơn hàng:</span>
+                            <span id="lblOrderId" class="font-bold text-gray-800">---</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-200 border-dashed">
+                            <span class="text-gray-500">Ngày:</span>
+                            <span id="lblDate" class="font-bold text-gray-800">---</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3 border-b border-gray-200 border-dashed">
+                            <span class="text-gray-500">Tổng cộng:</span>
+                            <span id="lblTotal" class="font-bold text-red-600">---</span>
+                        </div>
+                        <div class="flex justify-between items-center py-3">
+                            <span class="text-gray-500 text-sm">Phương thức thanh toán:</span>
+                            <span class="font-bold text-gray-800 text-sm text-right">Chuyển khoản ngân hàng (Quét mã QR)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left: Transfer Details -->
+                <div class="lg:col-span-5 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                    <h2 class="text-lg font-bold text-primary mb-2">Thông tin chuyển khoản ngân hàng</h2>
+                    <p class="text-gray-500 text-sm mb-6 leading-relaxed">Vui lòng chuyển đúng nội dung <strong id="instructionMemo" class="text-gray-800">---</strong> để chúng tôi có thể xác nhận thanh toán</p>
+                    
+                    <div class="space-y-0 text-sm">
+                        <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                            <span class="text-gray-500 font-bold">Tên tài khoản:</span>
+                            <span class="text-gray-800 font-bold">TRAN CONG LUYEN</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 bg-gray-50 px-4 -mx-4">
+                            <span class="text-gray-500 font-bold">Số tài khoản:</span>
+                            <span class="text-gray-800 font-bold">1017230885</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                            <span class="text-gray-500 font-bold">Ngân hàng:</span>
+                            <span class="text-gray-800 text-right max-w-[200px]">Vietcombank</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                            <span class="text-gray-500 font-bold">Số tiền:</span>
+                            <span id="bankAmount" class="text-red-600 font-bold">---</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4">
+                            <span class="text-gray-500 font-bold">Nội dung*:</span>
+                            <span id="bankMemo" class="text-red-600 font-bold">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Order Details -->
+                <div class="lg:col-span-7 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                    <h2 class="text-lg font-bold text-primary mb-6">Chi tiết đơn hàng</h2>
+                    
+                    <div class="flex justify-between text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 pb-3 mb-4">
+                        <span>Sản phẩm</span>
+                        <span>Tổng</span>
+                    </div>
+
+                    <div id="orderItemsContainer" class="space-y-3 mb-4 pb-4 border-b border-gray-200">
+                        <!-- JS render -->
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-200 border-dashed text-sm">
+                        <span class="text-gray-500 font-bold">Tổng số phụ:</span>
+                        <span id="orderSummarySubTotal" class="font-bold text-red-600">---</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center py-3 border-b border-gray-200 border-dashed text-sm">
+                        <span class="text-gray-500 font-bold">Phương thức thanh toán:</span>
+                        <span class="text-gray-800 text-right">Chuyển khoản ngân hàng<br>(Quét mã QR)</span>
+                    </div>
+
+                    <div class="flex justify-between items-center py-5 bg-gray-50 px-6 mt-4 -mx-8">
+                        <span class="font-bold text-gray-800">TỔNG CỘNG:</span>
+                        <span id="orderSummaryTotal" class="text-xl font-bold text-red-600">---</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Contact Info -->
+            <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+                <h2 class="text-lg font-bold text-primary mb-6">Thông tin liên hệ</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 mb-1">Họ và tên</p>
+                            <p id="lblUserFullname" class="font-bold text-gray-800">---</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 mb-1">Số điện thoại</p>
+                            <p id="lblUserPhone" class="font-bold text-gray-800">---</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 mb-1">Email</p>
+                            <p id="lblUserEmail" class="font-bold text-gray-800">---</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-[#F0F7FF] text-blue-600 text-sm p-4 rounded-lg flex gap-2">
+                    <i class="fa-solid fa-circle-info mt-0.5"></i>
+                    <span>Sau khi chuyển khoản thành công, hệ thống sẽ tự động xác nhận trong vòng 1-3 phút.</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/cart.js"></script>
+    <script>
+        // Xóa giỏ hàng khi vào trang này
+        localStorage.removeItem('hiho_cart');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lấy URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            let orderId = urlParams.get('orderId');
+            
+            // Lấy data từ localStorage
+            const orderDataRaw = localStorage.getItem('hiho_latest_order');
+            let orderData = null;
+            
+            if(orderDataRaw) {
+                orderData = JSON.parse(orderDataRaw);
+                // Nếu param không có, lấy từ localStorage
+                if(!orderId && orderData.orderId) {
+                    orderId = orderData.orderId;
+                }
+            }
+            
+            if(!orderId || !orderData) {
+                alert('Không tìm thấy thông tin đơn hàng!');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Render UI
+            const totalFormatted = formatNumberToPrice(orderData.total);
+            const dateStr = new Date(orderData.date).toLocaleDateString('vi-VN');
+            
+            document.getElementById('lblOrderId').textContent = orderId;
+            document.getElementById('lblDate').textContent = dateStr;
+            document.getElementById('lblTotal').textContent = totalFormatted;
+            
+            document.getElementById('instructionMemo').textContent = orderId;
+            document.getElementById('bankAmount').textContent = totalFormatted + ' vnđ';
+            document.getElementById('bankMemo').textContent = orderId;
+            document.getElementById('orderSummarySubTotal').textContent = totalFormatted;
+            document.getElementById('orderSummaryTotal').textContent = totalFormatted;
+
+            // Fill contact info
+            if(orderData.user) {
+                document.getElementById('lblUserFullname').textContent = orderData.user.fullname || '---';
+                document.getElementById('lblUserPhone').textContent = orderData.user.phone || '---';
+                document.getElementById('lblUserEmail').textContent = orderData.user.email || '---';
+            }
+            
+            // Render QR Code API
+            // URL: https://img.vietqr.io/image/Vietcombank-1017230885-compact2.png?amount={amount}&addInfo={addInfo}&accountName=TRAN%20CONG%20LUYEN
+            const qrUrl = `https://img.vietqr.io/image/Vietcombank-1017230885-compact2.png?amount=${orderData.total}&addInfo=${orderId}&accountName=TRAN%20CONG%20LUYEN`;
+            const qrImg = document.getElementById('qrImage');
+            const qrLoading = document.getElementById('qrLoading');
+            
+            qrImg.onload = () => {
+                qrLoading.style.display = 'none';
+                qrImg.classList.remove('hidden');
+            };
+            qrImg.src = qrUrl;
+            
+            // Render Items
+            const itemsContainer = document.getElementById('orderItemsContainer');
+            let itemsHtml = '';
+            
+            orderData.items.forEach(item => {
+                itemsHtml += `
+                    <div class="flex items-center justify-between gap-4 py-2 text-sm">
+                        <div class="flex-1 pr-4">
+                            <span class="text-gray-500 line-clamp-2">${item.ten_khoa_hoc} <strong class="text-gray-800 ml-1">× 1</strong></span>
+                        </div>
+                        <div class="font-bold text-red-600 whitespace-nowrap">${item.gia_moi}</div>
+                    </div>
+                `;
+            });
+            itemsContainer.innerHTML = itemsHtml;
+        });
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Đã copy: ' + text);
+            });
+        }
+        
+        function copyMemo() {
+            const memo = document.getElementById('bankMemo').textContent;
+            copyText(memo);
+        }
+    </script>
+</body>
+</html>

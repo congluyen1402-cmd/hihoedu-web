@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HihoEdu - Nền tảng học tập toàn diện</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        cta: '#f59e0b',
+                        ctaHover: '#d97706',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <!-- Top Bar -->
+        <div class="container mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center">
+                    <img src="images/logo.jpg" alt="HihoEdu Logo" class="h-10 w-auto object-contain">
+                </a>
+                <span class="hidden md:block text-sm text-gray-500 border-l border-gray-300 pl-3">Nền tảng học tập toàn diện</span>
+            </div>
+            
+            <div class="flex-1 max-w-xl">
+                <div class="relative">
+                    <input type="text" placeholder="Tìm kiếm khóa học..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <a href="#" onclick="openCartModal(); return false;" class="flex items-center gap-2 text-primary hover:text-cta transition">
+                    <div class="relative">
+                        <i class="fa-solid fa-cart-shopping text-xl"></i>
+                        <span class="cart-badge absolute -top-2 -right-2 bg-cta text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold hidden">0</span>
+                    </div>
+                    <span class="hidden sm:inline font-medium">Giỏ hàng</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="bg-primary text-white relative z-40 shadow-md">
+            <div class="container mx-auto px-4 flex items-center">
+                
+                <!-- Category Dropdown -->
+                <div class="relative group">
+                    <button id="categoryBtn" class="flex items-center gap-2 bg-primary px-6 py-4 font-semibold hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-bars"></i>
+                        Danh mục
+                    </button>
+                    <!-- Mega Menu Content -->
+                    <div class="absolute top-full left-0 w-64 bg-white text-gray-800 shadow-xl rounded-b-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <ul class="py-2 relative">
+                            <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-primary transition font-medium border-b border-gray-100" data-category="all"><i class="fa-solid fa-table-cells-large w-5 text-gray-400 text-center"></i> Tất cả khóa học</a></li>
+                            
+                            <!-- 2. Marketing -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-bullhorn w-5 text-gray-400 text-center"></i> Marketing</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="AI Marketing"><i class="fa-solid fa-robot text-gray-400 w-4 text-center"></i> AI Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Content Marketing"><i class="fa-solid fa-pen-to-square text-gray-400 w-4 text-center"></i> Content Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Digital Marketing"><i class="fa-solid fa-play text-gray-400 w-4 text-center"></i> Digital Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Brand Marketing"><i class="fa-solid fa-building text-gray-400 w-4 text-center"></i> Brand Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Facebook Marketing"><i class="fa-brands fa-facebook text-gray-400 w-4 text-center"></i> Facebook Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiktok Marketing"><i class="fa-brands fa-tiktok text-gray-400 w-4 text-center"></i> Tiktok Marketing</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Google Marketing"><i class="fa-brands fa-google text-gray-400 w-4 text-center"></i> Google Marketing</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 3. Thiết kế -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-pen-to-square w-5 text-gray-400 text-center"></i> Thiết kế - Biên tập video</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tư duy"><i class="fa-solid fa-lightbulb text-gray-400 w-4 text-center"></i> Tư duy thiết kế</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="2D"><i class="fa-solid fa-vector-square text-gray-400 w-4 text-center"></i> Thiết kế 2D</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="3D"><i class="fa-solid fa-cube text-gray-400 w-4 text-center"></i> Thiết kế 3D</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="UI/UX"><i class="fa-solid fa-mobile-screen text-gray-400 w-4 text-center"></i> UI/UX Design</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Quay dựng"><i class="fa-solid fa-video text-gray-400 w-4 text-center"></i> Quay dựng Video</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 4. AI -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-robot w-5 text-gray-400 text-center"></i> AI - Trí tuệ nhân tạo</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="ChatGPT">Ứng dụng ChatGPT</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Midjourney">Vẽ tranh Midjourney</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 5. Kinh doanh -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-briefcase w-5 text-gray-400 text-center"></i> Kinh doanh - Khởi nghiệp</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Khởi nghiệp">Khởi nghiệp</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Quản trị">Quản trị</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 6. IT -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-laptop-code w-5 text-gray-400 text-center"></i> IT - Công nghệ thông tin</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Web Frontend">Web Frontend</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Web Backend">Web Backend</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Mobile App">Mobile App</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 7. Tài chính - Đầu tư -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-chart-simple w-5 text-gray-400 text-center"></i> Tài chính - Đầu tư</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tư duy tài chính"><i class="fa-solid fa-money-bill-trend-up text-gray-400 w-4 text-center"></i> Tư duy tài chính</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư chứng khoán"><i class="fa-solid fa-chart-line text-gray-400 w-4 text-center"></i> Đầu tư chứng khoán</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư Crypto"><i class="fa-brands fa-bitcoin text-gray-400 w-4 text-center"></i> Đầu tư Crypto</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Đầu tư khác"><i class="fa-solid fa-dollar-sign text-gray-400 w-4 text-center"></i> Đầu tư khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 8. Ngoại ngữ -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-language w-5 text-gray-400 text-center"></i> Ngoại ngữ</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Anh"><i class="fa-solid fa-a text-gray-400 w-4 text-center"></i> Tiếng Anh</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Trung"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Tiếng Trung</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Tiếng Nhật"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Tiếng Nhật</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Ngôn ngữ khác"><i class="fa-solid fa-language text-gray-400 w-4 text-center"></i> Ngôn ngữ khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 9. Tin học văn phòng -->
+                            <li class="group/sub relative">
+                                <div class="flex items-center justify-between px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium">
+                                    <span class="flex items-center gap-3"><i class="fa-brands fa-windows w-5 text-gray-400 text-center"></i> Tin học văn phòng</span>
+                                    <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                                </div>
+                                <div class="absolute top-0 left-full w-60 bg-white border border-gray-100 shadow-xl rounded-r-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all duration-300 transform translate-x-2 group-hover/sub:translate-x-0">
+                                    <ul class="py-2">
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Word"><i class="fa-solid fa-file-word text-gray-400 w-4 text-center"></i> Word</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Excel"><i class="fa-solid fa-file-excel text-gray-400 w-4 text-center"></i> Excel</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="PowerPoint"><i class="fa-solid fa-file-powerpoint text-gray-400 w-4 text-center"></i> PowerPoint</a></li>
+                                        <li><a href="#" class="filter-btn flex items-center gap-3 px-4 py-3 hover:bg-gray-100 hover:text-cta transition text-sm font-medium" data-category="Công cụ khác"><i class="fa-solid fa-file text-gray-400 w-4 text-center"></i> Công cụ khác</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <!-- 10. Kỹ năng mềm -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="Kỹ năng mềm">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-user-group w-5 text-gray-400 text-center"></i> Kỹ năng mềm</span>
+                                </div>
+                            </li>
+
+                            <!-- 11. MMO -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="MMO">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-money-check-dollar w-5 text-gray-400 text-center"></i> MMO - Kiếm tiền online</span>
+                                </div>
+                            </li>
+
+                            <!-- 12. Khóa học khác -->
+                            <li>
+                                <div class="flex items-center px-4 py-3 hover:bg-gray-100 hover:text-primary transition cursor-pointer font-medium filter-btn" data-category="Khóa học khác">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-file w-5 text-gray-400 text-center"></i> Khóa học khác</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Main Links -->
+                <ul class="hidden md:flex flex-1 items-center space-x-1 pl-6">
+                    <li><a href="index.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link filter-btn" data-category="all">Trang chủ</a></li>
+                    <li><a href="index.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link filter-btn" data-category="show-all">Khóa học</a></li>
+                    <li><a href="#" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link text-cta">Combo VIP</a></li>
+                    <li><a href="gioi-thieu.html" class="px-4 py-4 block hover:text-cta font-medium transition relative nav-link">Giới thiệu</a></li>
+                </ul>
+
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12 bg-white">
+        <!-- Title -->
+        <div class="container mx-auto px-4 mb-16 mt-8">
+            <div class="flex items-center justify-center gap-4">
+                <div class="h-px w-16 md:w-24 bg-orange-300 opacity-50"></div>
+                <h1 class="text-3xl md:text-5xl font-extrabold text-orange-500 tracking-tight uppercase text-center">Giới thiệu</h1>
+                <div class="h-px w-16 md:w-24 bg-orange-300 opacity-50"></div>
+            </div>
+        </div>
+
+        <!-- Section: Câu Chuyện Thành Lập -->
+        <section class="bg-[#0B132B] text-white py-16 lg:py-24">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="rounded-2xl overflow-hidden shadow-2xl relative" data-aos="fade-right">
+                        <div class="w-full aspect-[4/3] bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center p-8 border border-slate-700">
+                            <div class="w-full max-w-sm rounded-3xl bg-white shadow-2xl flex items-center justify-center p-4 relative overflow-hidden group hover:scale-105 transition duration-500">
+                                <img src="images/logo.jpg" alt="HihoEdu Logo" class="w-full h-auto object-contain">
+                            </div>
+                        </div>
+                    </div>
+                    <div data-aos="fade-left">
+                        <h2 class="text-3xl lg:text-4xl font-bold mb-8 relative pb-4 inline-block">
+                            Câu Chuyện Thành Lập
+                            <div class="absolute bottom-0 left-0 w-1/2 h-1 bg-blue-500 rounded-full"></div>
+                        </h2>
+                        <ul class="space-y-6 text-gray-300 leading-relaxed text-lg">
+                            <li class="flex items-start gap-4">
+                                <span class="mt-1 flex-shrink-0 text-blue-400 text-xl"><i class="fa-solid fa-circle-check"></i></span>
+                                <span>HihoEdu mang đến giải pháp học trực tuyến tiết kiệm, linh hoạt và dễ tiếp cận cho sinh viên, người mới đi làm và những ai muốn phát triển kỹ năng với chi phí tối ưu.</span>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <span class="mt-1 flex-shrink-0 text-blue-400 text-xl"><i class="fa-solid fa-circle-check"></i></span>
+                                <span>Với nền tảng học tập được sắp xếp khoa học, nội dung thực tiễn, HihoEdu giúp học viên dễ dàng nắm bắt kiến thức chuyên môn, xây dựng nền tảng vững chắc để tự tin chinh phục các mục tiêu nghề nghiệp.</span>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <span class="mt-1 flex-shrink-0 text-blue-400 text-xl"><i class="fa-solid fa-circle-check"></i></span>
+                                <span>Chúng tôi tin rằng việc học không bao giờ ngừng lại. Với mức phí hợp lý, bạn hoàn toàn có thể duy trì thói quen học tập, liên tục cập nhật kỹ năng mà không lo áp lực tài chính.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Định Hướng - Sứ Mệnh - Giá Trị -->
+        <section class="py-16 lg:py-24">
+            <div class="container mx-auto px-4 max-w-6xl space-y-24">
+                
+                <!-- Định Hướng -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div data-aos="fade-up">
+                        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center gap-3"><i class="fa-solid fa-compass text-cta"></i> Định Hướng Phát Triển</h2>
+                        <ul class="space-y-4 text-gray-600 leading-relaxed text-lg">
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Tập trung cải thiện chất lượng khóa học và tối ưu trải nghiệm học trực tuyến.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Mở rộng danh mục đào tạo, đáp ứng nhu cầu nhân sự trong thời đại công nghệ số.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Hợp tác với các đối tác, chuyên gia để mang đến nội dung thực tế, hữu ích nhất.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden shadow-lg h-64 lg:h-80 bg-gray-100 relative group" data-aos="fade-up" data-aos-delay="100">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Định hướng" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    </div>
+                </div>
+
+                <!-- Sứ Mệnh -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="rounded-2xl overflow-hidden shadow-lg h-64 lg:h-80 bg-gray-100 relative group order-2 lg:order-1" data-aos="fade-up">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sứ mệnh" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    </div>
+                    <div class="order-1 lg:order-2" data-aos="fade-up" data-aos-delay="100">
+                        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center gap-3"><i class="fa-solid fa-bullseye text-blue-500"></i> Sứ Mệnh</h2>
+                        <ul class="space-y-4 text-gray-600 leading-relaxed text-lg">
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Mang đến cơ hội học tập trọn đời cho mọi người, xóa bỏ rào cản tài chính.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Cung cấp kiến thức dễ hiểu, dễ áp dụng vào thực tế công việc.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1">Góp phần nâng cao năng lực chuyên môn cho lực lượng lao động Việt Nam.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Giá Trị Cốt Lõi -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div data-aos="fade-up">
+                        <h2 class="text-3xl font-bold text-primary mb-6 flex items-center gap-3"><i class="fa-solid fa-gem text-emerald-500"></i> Giá Trị Cốt Lõi</h2>
+                        <ul class="space-y-4 text-gray-600 leading-relaxed text-lg">
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1"><strong class="text-gray-900 font-bold">Cam kết chất lượng khóa học:</strong> Đảm bảo nội dung bài giảng luôn được cập nhật, bám sát thực tiễn.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1"><strong class="text-gray-900 font-bold">Đảm bảo chất lượng dịch vụ:</strong> Hỗ trợ học viên nhanh chóng, tận tâm.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1"><strong class="text-gray-900 font-bold">Sự chỉn chu:</strong> Chăm chút từng bài giảng, từ nội dung đến hình ảnh, âm thanh.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1"><strong class="text-gray-900 font-bold">Mang đến sự tiện lợi:</strong> Hệ thống học tập thông minh, dễ thao tác trên mọi thiết bị.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex h-7 items-center flex-shrink-0 text-gray-400"><i class="fa-solid fa-circle text-[8px]"></i></span>
+                                <span class="flex-1"><strong class="text-gray-900 font-bold">Sẵn sàng lắng nghe:</strong> Luôn ghi nhận đóng góp để hoàn thiện nền tảng ngày một tốt hơn.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="rounded-2xl overflow-hidden shadow-lg h-64 lg:h-80 bg-gray-100 relative group" data-aos="fade-up" data-aos-delay="100">
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Giá trị cốt lõi" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section: Chính Sách - Cam Kết -->
+        <section class="bg-gray-50 py-16 lg:py-24 border-y border-gray-200">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <div class="flex items-center justify-center gap-4 mb-12">
+                    <div class="h-px w-16 md:w-24 bg-orange-300 opacity-50"></div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-orange-500 tracking-tight uppercase text-center">CHÍNH SÁCH - CAM KẾT</h2>
+                    <div class="h-px w-16 md:w-24 bg-orange-300 opacity-50"></div>
+                </div>
+
+                <div class="space-y-8 md:space-y-12">
+                    <!-- Bảo mật -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition duration-300" data-aos="fade-up">
+                        <h3 class="text-xl font-bold text-primary mb-4 flex items-center gap-3"><i class="fa-solid fa-shield-halved text-blue-500"></i> I. BẢO MẬT & QUYỀN RIÊNG TƯ</h3>
+                        <p class="text-gray-600 leading-relaxed mb-3">HihoEdu cam kết bảo vệ thông tin cá nhân của học viên. Chúng tôi áp dụng các biện pháp bảo mật hiện đại nhất để đảm bảo dữ liệu của bạn an toàn, không chia sẻ với bên thứ ba vì mục đích thương mại.</p>
+                        <p class="text-gray-600 leading-relaxed">Mọi thông tin thanh toán, email, số điện thoại đều được mã hóa và lưu trữ nội bộ nhằm tối ưu trải nghiệm học tập và hỗ trợ bạn khi cần thiết.</p>
+                    </div>
+
+                    <!-- Thanh toán -->
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition duration-300" data-aos="fade-up">
+                        <h3 class="text-xl font-bold text-primary mb-6 flex items-center gap-3"><i class="fa-solid fa-credit-card text-emerald-500"></i> II. THANH TOÁN & HOÀN TIỀN</h3>
+                        
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="bg-[#0B132B] text-gray-400 pt-16 pb-8 border-t border-slate-800 mt-auto">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <!-- Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Cột 1: Giới thiệu -->
+                <div class="flex flex-col">
+                    <h3 class="text-white font-bold text-lg mb-6 pb-2 border-b-2 border-blue-500 inline-block w-max">Giới Thiệu</h3>
+                    <p class="mb-4 text-sm leading-relaxed">HihoEdu mang đến giải pháp học trực tuyến tiết kiệm, linh hoạt và dễ tiếp cận cho sinh viên, người mới đi làm và những ai muốn phát triển kỹ năng với chi phí tối ưu.</p>
+                    <p class="mb-6 text-sm leading-relaxed">Tại HihoEdu, bạn có thể học đa lĩnh vực, nâng cấp bản thân qua hệ thống khóa học online được sắp xếp rõ ràng, tiện lợi.</p>
+                    <div class="mt-auto border border-blue-900 bg-blue-950/30 rounded-xl p-4 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 shrink-0">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-bold text-sm">Học mọi lúc, mọi nơi</div>
+                            <div class="text-xs text-blue-200/70">Phát triển không giới hạn</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột 2: Danh Mục Khóa Học -->
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6 pb-2 border-b-2 border-blue-500 inline-block w-max">Danh Mục Khóa Học</h3>
+                    <ul class="flex flex-col gap-3">
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Tất cả khóa học</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Marketing</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Design - Edit video</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> AI - Trí tuệ nhân tạo</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Lập trình - CNTT</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Kinh doanh - Khởi nghiệp</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Tài chính - Đầu tư</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Ngoại ngữ</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Tin học văn phòng</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 3: Tìm Hiểu Thêm -->
+                <div>
+                    <h3 class="text-white font-bold text-lg mb-6 pb-2 border-b-2 border-blue-500 inline-block w-max">Tìm Hiểu Thêm</h3>
+                    <ul class="flex flex-col gap-3">
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Trang chủ</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Cửa hàng khóa học</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Gói tiết kiệm</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Lộ trình học toàn diện</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Về chúng tôi</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Bảo mật & quyền riêng tư</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Thanh toán & hoàn tiền</a></li>
+                        <li class="border-b border-gray-800/50 pb-2"><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Những câu hỏi thường gặp</a></li>
+                        <li><a href="#" class="flex items-center gap-2 hover:text-white hover:translate-x-1 transition duration-200 text-sm"><i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i> Thông tin liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Kết Nối & Nhận Diện -->
+                <div class="flex flex-col">
+                    <h3 class="text-white font-bold text-lg mb-6 pb-2 border-b-2 border-blue-500 inline-block w-max">Kết Nối Với Chúng Tôi</h3>
+                    <div class="flex gap-4 mb-10">
+                        <a href="#" class="w-10 h-10 rounded-full bg-blue-600/20 text-blue-500 hover:bg-blue-600 hover:text-white flex items-center justify-center text-lg transition duration-300"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 text-gray-400 hover:bg-black hover:text-white flex items-center justify-center text-lg transition duration-300"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-red-600/20 text-red-500 hover:bg-red-600 hover:text-white flex items-center justify-center text-lg transition duration-300"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    
+                    <h3 class="text-white font-bold text-lg mb-6 pb-2 border-b-2 border-blue-500 inline-block w-max">Nhận Diện</h3>
+                    <div class="w-48 bg-white p-2 rounded-xl">
+                        <img src="images/logo.jpg" alt="HihoEdu Logo" class="w-full h-auto object-contain rounded-lg">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4 opacity-50 grayscale hover:grayscale-0 transition duration-300">
+                    <i class="fa-brands fa-cc-visa text-3xl"></i>
+                    <i class="fa-brands fa-cc-paypal text-3xl"></i>
+                    <i class="fa-brands fa-cc-mastercard text-3xl"></i>
+                </div>
+                <div class="text-sm">
+                    &copy; 2026 - Bản quyền website thuộc HihoEdu
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            once: true,
+            offset: 50,
+            duration: 800,
+        });
+    </script>
+    <!-- Main JS -->
+    <script src="js/cart.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
