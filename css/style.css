@@ -1,0 +1,88 @@
+/* Custom Animations & Effects */
+
+/* Nav links underline animation */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background-color: #f59e0b; /* cta color */
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Floating animation for hero image */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+.floating-animation {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.animate-bounce-slow {
+    animation: bounce-slow 4s ease-in-out infinite;
+}
+
+/* Blob animations */
+@keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+    animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+    animation-delay: 2s;
+}
+
+/* Dropdown visibility classes handled by JS */
+.dropdown-open {
+    transform: scaleY(1) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Event Badge Animations */
+@keyframes pulse-fast {
+    0%, 100% { 
+        opacity: 1; 
+        box-shadow: 0 0 10px rgba(220, 38, 38, 0.6); 
+    }
+    50% { 
+        opacity: 0.85; 
+        box-shadow: 0 0 25px rgba(220, 38, 38, 1); 
+    }
+}
+.pulse-fast {
+    animation: pulse-fast 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+.wiggle {
+    animation: wiggle 0.4s ease-in-out infinite;
+}
