@@ -470,8 +470,40 @@
                 
                 localStorage.setItem('hiho_latest_order', JSON.stringify(orderData));
                 
-                // Chuyển hướng
-                window.location.href = `hoan-tat.html?orderId=${orderId}`;
+                // Gửi dữ liệu đơn hàng lên hệ thống tự động (Google Apps Script)
+                const courseIds = cart.map(c => c.id);
+                
+                const btn = document.getElementById('btnSubmitOrder');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+                btn.disabled = true;
+
+                fetch('https://script.google.com/macros/s/AKfycbzEXvFJ0eJf_AbGOLvPSZy7_Ca8vboTuXqp_gQwjLCFU0X_ajCUR0YSs2v8x75KKA1ETQ/exec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Dùng text/plain để tránh lỗi CORS Preflight
+                    body: JSON.stringify({
+                        action: 'new_order',
+                        data: {
+                            orderId: orderId,
+                            fullname: user.fullname,
+                            email: user.email,
+                            phone: user.phone,
+                            courseIds: courseIds,
+                            total: total
+                        }
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    // Chuyển hướng
+                    window.location.href = `hoan-tat.html?orderId=${orderId}`;
+                })
+                .catch(error => {
+                    console.error('Error saving order:', error);
+                    alert('Có lỗi xảy ra kết nối hệ thống. Vẫn tiếp tục tạo đơn...');
+                    // Fallback: Nếu lỗi vẫn cho qua trang hoàn tất để khách lấy mã QR
+                    window.location.href = `hoan-tat.html?orderId=${orderId}`;
+                });
             });
         });
     </script>
