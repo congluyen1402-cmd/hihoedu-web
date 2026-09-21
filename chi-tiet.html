@@ -316,9 +316,9 @@
                             <button id="btnAddToCart" class="flex-1 flex justify-center items-center gap-2 py-3.5 px-6 bg-gradient-to-r from-orange-400 to-yellow-500 text-white font-extrabold text-lg rounded-xl shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-1 transition duration-300">
                                 <i class="fa-solid fa-cart-shopping"></i> THÊM VÀO GIỎ HÀNG
                             </button>
-                            <button id="btnBuyNow" class="flex-1 flex justify-center items-center gap-2 py-3.5 px-6 bg-primary text-white font-extrabold text-lg rounded-xl shadow-lg hover:bg-slate-800 hover:shadow-primary/30 transform hover:-translate-y-1 transition duration-300">
-                                <i class="fa-solid fa-bolt"></i> THANH TOÁN NGAY
-                            </button>
+                            <a id="btnAccessCourse" href="#" target="_blank" class="flex-1 flex justify-center items-center gap-2 py-3.5 px-6 bg-primary text-white font-extrabold text-lg rounded-xl shadow-lg hover:bg-slate-800 hover:shadow-primary/30 transform hover:-translate-y-1 transition duration-300">
+                                <i class="fa-solid fa-play"></i> TRUY CẬP KHÓA HỌC
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -636,16 +636,22 @@
 
                             // Action buttons logic
                             const btnAddToCart = document.getElementById('btnAddToCart');
-                            const btnBuyNow = document.getElementById('btnBuyNow');
+                            const btnAccessCourse = document.getElementById('btnAccessCourse');
                             
                             if(btnAddToCart) {
                                 btnAddToCart.addEventListener('click', () => addToCart(course));
                             }
-                            if(btnBuyNow) {
-                                btnBuyNow.addEventListener('click', () => {
-                                    addToCart(course);
-                                    window.location.href = 'thanh-toan.html';
-                                });
+                            if(btnAccessCourse) {
+                                const driveLink = course["link_drive\r\n1"] || course.link_drive || course.Drive_Folder_ID || course["link_drive\n1"];
+                                if (driveLink && driveLink.trim() !== '') {
+                                    btnAccessCourse.href = driveLink.trim();
+                                } else {
+                                    btnAccessCourse.href = "#";
+                                    btnAccessCourse.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        alert("Khóa học này đang cập nhật link. Vui lòng quay lại sau.");
+                                    });
+                                }
                             }
 
                             // Hàm render danh sách chuyên nghiệp với icon
