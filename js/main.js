@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Dropdown Menu Logic
     const categoryBtn = document.getElementById('categoryBtn');
@@ -279,5 +279,41 @@
                 }
             });
         });
+        // 5. Search Logic
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                
+                const breadcrumbCategory = document.getElementById('breadcrumbCategory');
+                const breadcrumbContainer = document.getElementById('breadcrumbContainer');
+
+                if (query === '') {
+                    renderCourses(allCourses, true);
+                    if (breadcrumbContainer) breadcrumbContainer.classList.add('hidden');
+                } else {
+                    const filtered = allCourses.filter(c => {
+                        const nameMatch = c.ten_khoa_hoc && c.ten_khoa_hoc.toLowerCase().includes(query);
+                        const catMainMatch = c.danh_muc_chinh && c.danh_muc_chinh.toLowerCase().includes(query);
+                        const catSubMatch = c.danh_muc_con && c.danh_muc_con.toLowerCase().includes(query);
+                        return nameMatch || catMainMatch || catSubMatch;
+                    });
+                    
+                    renderCourses(filtered, false); // Hiển thị tất cả kết quả tìm kiếm
+                    
+                    if (breadcrumbContainer) breadcrumbContainer.classList.remove('hidden');
+                    if (breadcrumbCategory) breadcrumbCategory.textContent = `Tìm kiếm: "${query}"`;
+                    
+                    // Cuộn xuống danh sách nếu người dùng gõ nhiều hơn 2 ký tự (tùy chọn)
+                    if (query.length > 2) {
+                        const section = courseList.closest('section');
+                        if (section) {
+                            // Không cuộn mượt mà liên tục gây khó chịu, chỉ cuộn nhẹ
+                            // section.scrollIntoView({ behavior: 'auto', block: 'start' });
+                        }
+                    }
+                }
+            });
+        }
     }
 });
