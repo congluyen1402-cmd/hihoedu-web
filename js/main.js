@@ -325,7 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
-    }
 
     // ==========================================
     // UI/UX UPGRADES: Scroll Animations & Progress
