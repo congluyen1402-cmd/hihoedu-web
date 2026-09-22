@@ -145,8 +145,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }
 
+                // Add reveal-on-scroll and data-delay for staggered animation
+                const revealClasses = "reveal-on-scroll opacity-0 translate-y-4 md:translate-y-12 transition-all duration-500 md:duration-[800ms] ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0";
+                const delay = index * 100; // 100ms staggered delay
+
                 const cardHTML = `
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full">
+                    <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
                         <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video">
                             <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                             <!-- Badges -->
@@ -188,6 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 courseList.insertAdjacentHTML('beforeend', cardHTML);
             });
+            
+            // Khởi tạo lại observer cho các phần tử mới render
+            if (window.initScrollReveal) {
+                window.initScrollReveal();
+            }
         };
 
         // Xử lý sự kiện click "Thêm vào giỏ hàng" bằng Event Delegation
@@ -315,5 +324,93 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+    }
+    }
+
+    // ==========================================
+    // UI/UX UPGRADES: Scroll Animations & Progress
+    // ==========================================
+
+    // A. Navbar Scroll Effect & Progress Bar
+    const header = document.querySelector('header');
+    const scrollProgress = document.getElementById('scrollProgress');
+
+    window.addEventListener('scroll', () => {
+        // Navbar Effect
+        if (window.scrollY > 50) {
+            header.classList.remove('bg-white', 'py-3');
+            header.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-2');
+        } else {
+            header.classList.add('bg-white', 'py-3');
+            header.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm', 'py-2');
+        }
+
+        // Scroll Progress Bar
+        if (scrollProgress) {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (scrollTop / scrollHeight) * 100;
+            scrollProgress.style.width = scrolled + '%';
+        }
+    });
+
+    // B. IntersectionObserver for Scroll Reveal & Staggered Grid
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReducedMotion) {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15 // Triggers when 15% of the element is visible
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    
+                    // Xử lý Staggered Animation cho Grid Khóa học (các phần tử có data-delay)
+                    const delay = el.getAttribute('data-delay');
+                    if (delay) {
+                        setTimeout(() => {
+                            el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4');
+                            el.classList.add('opacity-100', 'translate-y-0');
+                        }, parseInt(delay));
+                    } else {
+                        // Reveal bình thường
+                        el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4');
+                        el.classList.add('opacity-100', 'translate-y-0');
+                    }
+                    
+                    // Ngừng observe sau khi đã hiện (chạy 1 lần)
+                    observer.unobserve(el);
+                }
+            });
+        }, observerOptions);
+
+        // Khởi tạo observer cho tất cả các phần tử có class 'reveal-on-scroll'
+        // Cần gọi lại hàm này sau khi render danh sách khóa học động
+        window.initScrollReveal = () => {
+            // Tự động chuyển đổi các thẻ cũ dùng data-aos thành reveal-on-scroll
+            const aosElements = document.querySelectorAll('[data-aos]:not(.revealed)');
+            aosElements.forEach(el => {
+                el.classList.add('reveal-on-scroll', 'opacity-0', 'translate-y-4', 'md:translate-y-12', 'transition-all', 'duration-500', 'md:duration-[800ms]', 'ease-out', 'motion-reduce:transition-none', 'motion-reduce:opacity-100', 'motion-reduce:translate-y-0');
+                
+                // Xử lý delay cũ của AOS nếu có
+                const delay = el.getAttribute('data-aos-delay');
+                if (delay) el.setAttribute('data-delay', delay);
+                
+                el.removeAttribute('data-aos');
+            });
+
+            const revealElements = document.querySelectorAll('.reveal-on-scroll:not(.revealed)');
+            revealElements.forEach(el => {
+                revealObserver.observe(el);
+                el.classList.add('revealed'); // Đánh dấu đã observe để không bị lặp
+            });
+        };
+
+        // Chạy lần đầu
+        initScrollReveal();
     }
 });
