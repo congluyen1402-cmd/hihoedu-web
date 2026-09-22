@@ -47,7 +47,7 @@
             
             <div class="flex-1 max-w-xl">
                 <div class="relative">
-                    <input type="text" placeholder="Tìm kiếm khóa học..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm khóa học..." class="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
                     <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -282,17 +282,160 @@
         </div>
     </section>
 
-    <!-- Tools/Software Section -->
-    <section class="py-10 bg-white border-y border-gray-100">
-        <div class="container mx-auto px-4" data-aos="fade-up">
-            <p class="text-center text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">Thành thạo các công cụ hàng đầu</p>
-            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition duration-300">
-                <i class="fa-brands fa-python text-5xl hover:text-blue-500 transition"></i>
-                <i class="fa-brands fa-react text-5xl hover:text-blue-400 transition"></i>
-                <i class="fa-brands fa-figma text-5xl hover:text-purple-500 transition"></i>
-                <i class="fa-solid fa-robot text-5xl hover:text-emerald-500 transition"></i>
-                <i class="fa-brands fa-wordpress text-5xl hover:text-blue-600 transition"></i>
-                <i class="fa-solid fa-chart-pie text-5xl hover:text-green-600 transition"></i>
+    <!-- Popular Topics Section -->
+    <section class="py-16 bg-white border-y border-gray-100">
+        <div class="container mx-auto px-4">
+            
+            <!-- Section Header -->
+            <div class="flex items-center justify-center gap-4 mb-12" data-aos="fade-up">
+                <div class="h-px bg-blue-200 flex-1 max-w-[100px] relative">
+                    <div class="w-2 h-2 bg-blue-600 rounded-full absolute right-0 top-1/2 -translate-y-1/2"></div>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-[#0B132B] uppercase tracking-wide">Chủ đề học phổ biến</h2>
+                <div class="h-px bg-blue-200 flex-1 max-w-[100px] relative">
+                    <div class="w-2 h-2 bg-blue-600 rounded-full absolute left-0 top-1/2 -translate-y-1/2"></div>
+                </div>
+            </div>
+
+            <!-- Topics Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6" data-aos="fade-up" data-aos-delay="100">
+                
+                <!-- Topic Card Template Function - Repeated for each topic -->
+                <!-- 1 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Content Marketing">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-3xl group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-blue-600 transition">Content Marketing</h3>
+                    <div class="w-6 h-0.5 bg-blue-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 2 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Digital Marketing">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 text-3xl group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-indigo-600 transition">Digital Marketing</h3>
+                    <div class="w-6 h-0.5 bg-indigo-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 3 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Brand Marketing">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-fuchsia-50 flex items-center justify-center text-fuchsia-600 text-3xl group-hover:scale-110 group-hover:bg-fuchsia-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-fuchsia-600 transition">Brand Marketing</h3>
+                    <div class="w-6 h-0.5 bg-fuchsia-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 4 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="AI Marketing">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-violet-50 flex items-center justify-center text-violet-600 text-3xl group-hover:scale-110 group-hover:bg-violet-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-violet-600 transition">AI Marketing</h3>
+                    <div class="w-6 h-0.5 bg-violet-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 5 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="AI Video - Thiết kế">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-sky-50 flex items-center justify-center text-sky-600 text-3xl group-hover:scale-110 group-hover:bg-sky-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-photo-film"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-sky-600 transition">AI Video - Thiết kế</h3>
+                    <div class="w-6 h-0.5 bg-sky-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 6 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Tư duy thiết kế">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 text-3xl group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-amber-500 transition">Tư duy thiết kế</h3>
+                    <div class="w-6 h-0.5 bg-amber-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+                
+                <!-- 7 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Photoshop">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-[#001E36] flex items-center justify-center text-[#31A8FF] text-3xl group-hover:scale-110 transition-all duration-300 shadow-inner">
+                        <span class="font-bold text-xl">Ps</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-[#31A8FF] transition">Photoshop</h3>
+                    <div class="w-6 h-0.5 bg-[#31A8FF] group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 8 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Illustrator">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-[#330000] flex items-center justify-center text-[#FF9A00] text-3xl group-hover:scale-110 transition-all duration-300 shadow-inner">
+                        <span class="font-bold text-xl">Ai</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-[#FF9A00] transition">Illustrator</h3>
+                    <div class="w-6 h-0.5 bg-[#FF9A00] group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 9 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Premiere">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-[#00005B] flex items-center justify-center text-[#9999FF] text-3xl group-hover:scale-110 transition-all duration-300 shadow-inner">
+                        <span class="font-bold text-xl">Pr</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-[#9999FF] transition">Premiere</h3>
+                    <div class="w-6 h-0.5 bg-[#9999FF] group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 10 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Kinh doanh TMĐT">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 text-3xl group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-shop"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-orange-500 transition">Kinh doanh TMĐT</h3>
+                    <div class="w-6 h-0.5 bg-orange-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+                
+                <!-- 11 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Tài chính - Đầu tư">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-green-50 flex items-center justify-center text-green-600 text-3xl group-hover:scale-110 group-hover:bg-green-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-green-600 transition">Tài chính - Đầu tư</h3>
+                    <div class="w-6 h-0.5 bg-green-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 12 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Tin học văn phòng">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600 text-3xl group-hover:scale-110 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-laptop-file"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-cyan-600 transition">Tin học văn phòng</h3>
+                    <div class="w-6 h-0.5 bg-cyan-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 13 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Kỹ năng mềm">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 text-3xl group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-people-group"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-rose-500 transition">Kỹ năng mềm</h3>
+                    <div class="w-6 h-0.5 bg-rose-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 14 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="Tiktok Marketing">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-slate-100 flex items-center justify-center text-slate-900 text-4xl group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-brands fa-tiktok"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-slate-900 transition">TikTok Marketing</h3>
+                    <div class="w-6 h-0.5 bg-slate-900 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
+                <!-- 15 -->
+                <a href="#courses" class="filter-btn group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer" data-category="MMO">
+                    <div class="w-16 h-16 mb-4 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 text-3xl group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 group-hover:text-emerald-600 transition">MMO - Kiếm tiền</h3>
+                    <div class="w-6 h-0.5 bg-emerald-400 group-hover:w-12 transition-all duration-300"></div>
+                </a>
+
             </div>
         </div>
     </section>
