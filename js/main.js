@@ -101,23 +101,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let allCourses = []; // Biến lưu toàn bộ khóa học để lọc
+        let filteredCourses = []; // Danh sách khóa học đang hiển thị
+        let currentPage = 1;
+        const itemsPerPage = 12;
+
+        const renderPagination = () => {
+            const paginationContainer = document.getElementById('paginationContainer');
+            if (!paginationContainer) return;
+
+            const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            let paginationHTML = '';
+
+            // Nút Trước
+            if (currentPage > 1) {
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${currentPage - 1}">< Trước</button>`;
+            }
+
+            // Các trang
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-[#0B132B] text-white" data-page="${i}">${i}</button>`;
+                } else {
+                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${i}">${i}</button>`;
+                }
+            }
+
+            // Nút Tiếp
+            if (currentPage < totalPages) {
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${currentPage + 1}">Tiếp ></button>`;
+            }
+
+            paginationContainer.innerHTML = paginationHTML;
+        };
+
+        // Bắt sự kiện click phân trang
+        const paginationContainer = document.getElementById('paginationContainer');
+        if (paginationContainer) {
+            paginationContainer.addEventListener('click', (e) => {
+                const btn = e.target.closest('.pagination-btn');
+                if (btn) {
+                    const page = parseInt(btn.getAttribute('data-page'));
+                    if (page && page !== currentPage) {
+                        currentPage = page;
+                        renderCourses(currentPage);
+                        renderPagination();
+                        
+                        // Cuộn mượt mà lên đầu danh sách
+                        const section = courseList.closest('section');
+                        if (section) {
+                            window.scrollTo({ top: section.offsetTop - 100, behavior: 'smooth' });
+                        }
+                    }
+                }
+            });
+        }
 
         // Hàm render giao diện danh sách khóa học
-        const renderCourses = (coursesToRender, limit = true) => {
+        const renderCourses = (page) => {
             courseList.innerHTML = ''; // Xóa grid hiện tại
+            
+            // Xóa class animate để trigger lại animation khi đổi trang
+            courseList.classList.remove('animate-fadeIn');
+            void courseList.offsetWidth; // Trigger reflow
+            courseList.classList.add('animate-fadeIn');
 
-            let displayCourses = coursesToRender;
-            // Chỉ render tối đa 8 khóa học nếu limit = true
-            if (limit && coursesToRender.length > 16) {
-                displayCourses = coursesToRender.slice(0, 16);
-            }
+            const start = (page - 1) * itemsPerPage;
+            const end = page * itemsPerPage;
+            const displayCourses = filteredCourses.slice(start, end);
 
             if (!displayCourses || displayCourses.length === 0) {
                 courseList.innerHTML = '<p class="col-span-1 sm:col-span-2 lg:col-span-4 text-center text-gray-500 py-10 font-medium text-lg">Không tìm thấy khóa học nào trong danh mục này.</p>';
                 return;
             }
 
-            displayCourses.forEach((course, index) => {
+            const coursesHTML = displayCourses.map((course, index) => {
                 let eventBadgeHTML = '';
                 if (course.su_kien) {
                     const event = course.su_kien.trim();
@@ -128,12 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (eventLower === 'flash sale') {
                         badgeClass = 'bg-gradient-to-r from-red-600 via-pink-600 to-red-600 text-white pulse-fast border border-red-500/50 shadow-[0_0_15px_rgba(220,38,38,0.5)]';
                         icon = '⚡ ';
-                    }
-                    else if (eventLower === 'hot') {
+                    } else if (eventLower === 'hot') {
                         badgeClass = 'bg-gradient-to-r from-orange-500 to-yellow-500 text-black wiggle border border-yellow-400 shadow-lg';
                         icon = '🔥 ';
-                    }
-                    else if (eventLower === 'mới') {
+                    } else if (eventLower === 'mới') {
                         badgeClass = 'bg-emerald-500 text-white animate-bounce shadow-lg border border-emerald-400';
                         icon = '✨ ';
                     }
@@ -149,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const revealClasses = "reveal-on-scroll opacity-0 translate-y-4 md:translate-y-12 transition-all duration-500 md:duration-[800ms] ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0";
                 const delay = index * 100; // 100ms staggered delay
 
-                const cardHTML = `
+                return `
                     <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
                         <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video">
                             <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
@@ -190,8 +251,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
                 `;
-                courseList.insertAdjacentHTML('beforeend', cardHTML);
-            });
+            }).join('');
+            
+            courseList.innerHTML = coursesHTML;
             
             // Khởi tạo lại observer cho các phần tử mới render
             if (window.initScrollReveal) {
@@ -226,7 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 courseLoading.remove();
                 if (Array.isArray(data) && data.length > 0) {
                     allCourses = data; // Lưu lại
-                    renderCourses(allCourses); // Hiển thị ban đầu
+                    filteredCourses = [...allCourses];
+                    currentPage = 1;
+                    renderCourses(currentPage); // Hiển thị ban đầu
+                    renderPagination();
                 } else {
                     courseList.innerHTML = '<p class="col-span-1 sm:col-span-2 lg:col-span-4 text-center text-gray-500">Chưa có khóa học nào.</p>';
                 }
@@ -259,13 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const breadcrumbCategory = document.getElementById('breadcrumbCategory');
                 const breadcrumbContainer = document.getElementById('breadcrumbContainer');
 
-                if (category === 'all') {
-                    // Xem tất cả nhưng bị giới hạn 8 khóa
-                    renderCourses(allCourses, true);
-                    if (breadcrumbContainer) breadcrumbContainer.classList.add('hidden');
-                } else if (category === 'show-all') {
-                    // Xem TẤT CẢ không giới hạn (Nút Xem tất cả khóa học)
-                    renderCourses(allCourses, false);
+                if (category === 'all' || category === 'show-all') {
+                    // Xem tất cả
+                    filteredCourses = [...allCourses];
                     if (breadcrumbContainer) breadcrumbContainer.classList.add('hidden');
                 } else {
                     // Lọc theo danh mục
@@ -273,21 +334,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (breadcrumbCategory) breadcrumbCategory.textContent = category;
 
                     // Ưu tiên khớp danh_muc_con, nếu ko thì khớp danh_muc_chinh
-                    const filtered = allCourses.filter(c => c.danh_muc_con === category || c.danh_muc_chinh === category);
-                    // Có thể giới hạn 8 hoặc không tùy chiến lược, ở đây vẫn giới hạn 8 cho layout đẹp
-                    renderCourses(filtered, true);
+                    filteredCourses = allCourses.filter(c => c.danh_muc_con === category || c.danh_muc_chinh === category);
                 }
+
+                // Reset về trang 1
+                currentPage = 1;
+                renderCourses(currentPage);
+                renderPagination();
 
                 // Cuộn mượt mà xuống danh sách khóa học
                 const section = courseList.closest('section');
                 if (section) {
-                    // Timeout nhỏ để đảm bảo render DOM xong rồi cuộn (hoặc gọi AOS.refresh() nếu cần)
+                    // Timeout nhỏ để đảm bảo render DOM xong rồi cuộn
                     setTimeout(() => {
                         section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 100);
                 }
             });
         });
+
         // 5. Search Logic
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
@@ -298,30 +363,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 const breadcrumbContainer = document.getElementById('breadcrumbContainer');
 
                 if (query === '') {
-                    renderCourses(allCourses, true);
+                    filteredCourses = [...allCourses];
                     if (breadcrumbContainer) breadcrumbContainer.classList.add('hidden');
                 } else {
-                    const filtered = allCourses.filter(c => {
+                    filteredCourses = allCourses.filter(c => {
                         const nameMatch = c.ten_khoa_hoc && c.ten_khoa_hoc.toLowerCase().includes(query);
                         const catMainMatch = c.danh_muc_chinh && c.danh_muc_chinh.toLowerCase().includes(query);
                         const catSubMatch = c.danh_muc_con && c.danh_muc_con.toLowerCase().includes(query);
                         return nameMatch || catMainMatch || catSubMatch;
                     });
                     
-                    renderCourses(filtered, false); // Hiển thị tất cả kết quả tìm kiếm
-                    
                     if (breadcrumbContainer) breadcrumbContainer.classList.remove('hidden');
                     if (breadcrumbCategory) breadcrumbCategory.textContent = `Tìm kiếm: "${query}"`;
-                    
-                    // Cuộn xuống danh sách nếu người dùng gõ nhiều hơn 2 ký tự (tùy chọn)
-                    if (query.length > 2) {
-                        const section = courseList.closest('section');
-                        if (section) {
-                            // Không cuộn mượt mà liên tục gây khó chịu, chỉ cuộn nhẹ
-                            // section.scrollIntoView({ behavior: 'auto', block: 'start' });
-                        }
-                    }
                 }
+
+                // Cập nhật giao diện với trang 1
+                currentPage = 1;
+                renderCourses(currentPage);
+                renderPagination();
             });
         }
     }

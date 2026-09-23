@@ -25,6 +25,15 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    animation: {
+                        fadeIn: 'fadeIn 0.3s ease-in-out',
                     }
                 }
             }
@@ -499,7 +508,7 @@
                 <span id="breadcrumbCategory" class="text-primary font-bold">Danh mục</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="courseList" data-aos="fade-up">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="courseList" data-aos="fade-up">
                 <!-- Loading Spinner -->
                 <div id="courseLoading" class="col-span-1 sm:col-span-2 lg:col-span-4 flex flex-col items-center justify-center py-16">
                     <i class="fa-solid fa-circle-notch fa-spin text-5xl text-cta mb-4"></i>
@@ -507,11 +516,9 @@
                 </div>
             </div>
 
-            <!-- View All Button -->
-            <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="200">
-                <a href="#" class="inline-flex items-center gap-2 px-8 py-4 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-white transition duration-300 filter-btn" data-category="show-all">
-                    Xem tất cả khóa học <i class="fa-solid fa-arrow-right"></i>
-                </a>
+            <!-- Pagination Container -->
+            <div id="paginationContainer" class="mt-12 flex justify-center items-center gap-2 flex-wrap">
+                <!-- Nút phân trang sẽ được JS render vào đây -->
             </div>
 
         </div>
