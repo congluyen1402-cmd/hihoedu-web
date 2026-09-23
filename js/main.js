@@ -431,13 +431,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const delay = el.getAttribute('data-delay');
                     if (delay) {
                         setTimeout(() => {
-                            el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4');
-                            el.classList.add('opacity-100', 'translate-y-0');
+                            el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4', 'md:translate-y-12');
+                            el.classList.add('opacity-100', 'translate-y-0', 'md:translate-y-0');
                         }, parseInt(delay));
                     } else {
                         // Reveal bình thường
-                        el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4');
-                        el.classList.add('opacity-100', 'translate-y-0');
+                        el.classList.remove('opacity-0', 'translate-y-12', 'translate-y-4', 'md:translate-y-12');
+                        el.classList.add('opacity-100', 'translate-y-0', 'md:translate-y-0');
                     }
                     
                     // Ngừng observe sau khi đã hiện (chạy 1 lần)
