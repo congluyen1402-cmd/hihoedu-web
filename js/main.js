@@ -162,11 +162,108 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Hàm render giao diện danh sách khóa học
+        // Hàm tạo HTML cho 1 thẻ khóa học
+        const generateCourseHTML = (course, index) => {
+            let eventBadgeHTML = '';
+            if (course.su_kien) {
+                const event = course.su_kien.trim();
+                let badgeClass = 'bg-primary text-white'; // Default Navy
+                let icon = '';
+                const eventLower = event.toLowerCase();
+                
+                if (eventLower === 'flash sale') {
+                    badgeClass = 'bg-gradient-to-r from-red-600 via-pink-600 to-red-600 text-white pulse-fast border border-red-500/50 shadow-[0_0_15px_rgba(220,38,38,0.5)]';
+                    icon = '⚡ ';
+                } else if (eventLower === 'hot') {
+                    badgeClass = 'bg-gradient-to-r from-orange-500 to-yellow-500 text-black wiggle border border-yellow-400 shadow-lg';
+                    icon = '🔥 ';
+                } else if (eventLower === 'mới') {
+                    badgeClass = 'bg-emerald-500 text-white animate-bounce shadow-lg border border-emerald-400';
+                    icon = '✨ ';
+                }
+                
+                eventBadgeHTML = `
+                    <div class="${badgeClass} text-xs font-extrabold px-3 py-1.5 rounded-full z-10 whitespace-nowrap uppercase tracking-wider flex items-center gap-1">
+                        ${icon}${event}
+                    </div>
+                `;
+            }
+
+            const revealClasses = "reveal-on-scroll opacity-0 translate-y-4 md:translate-y-12 transition-all duration-500 md:duration-[800ms] ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0";
+            const delay = index * 100;
+
+            return `
+                <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
+                    <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video">
+                        <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <!-- Badges -->
+                        <div class="absolute top-2 left-2 flex items-start gap-2 flex-wrap max-w-[90%] z-20">
+                            ${eventBadgeHTML}
+                            <div class="bg-white/95 backdrop-blur text-[11px] font-bold px-2.5 py-1.5 rounded-lg text-primary shadow-sm whitespace-nowrap border border-gray-100">
+                                ${course.danh_muc_con || course.danh_muc_chinh || 'Khóa học'}
+                            </div>
+                        </div>
+                    </a>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <a href="chi-tiet.html?id=${course.id}" class="block">
+                            <h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-cta transition">${course.ten_khoa_hoc}</h3>
+                        </a>
+                        
+                        <div class="mt-auto">
+                            <!-- Info Row -->
+                            <div class="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-book text-gray-400"></i> ${course.so_bai_giang || '0'} bài giảng
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fa-solid fa-clock text-gray-400"></i> Sở hữu trọn đời
+                                </div>
+                            </div>
+                            <!-- Price -->
+                            <div class="text-center mb-4">
+                                <span class="text-2xl font-extrabold text-red-600 block">${course.gia_moi}</span>
+                            </div>
+                            <!-- Button -->
+                            <button type="button" data-course-index="${allCourses.indexOf(course)}" class="btn-add-cart block w-full py-3 px-4 bg-slate-900 text-white font-bold text-center rounded-xl hover:bg-slate-800 transition shadow-md">
+                                <i class="fa-solid fa-cart-shopping mr-2"></i> THÊM VÀO GIỎ HÀNG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        // Hàm render cho các khu vực nổi bật
+        const renderSpecialSections = () => {
+            const sections = [
+                { id: 'newCoursesList', keyword: 'mới' },
+                { id: 'topCoursesList', keyword: 'top' },
+                { id: 'comboCoursesList', keyword: 'combo' }
+            ];
+
+            sections.forEach(sec => {
+                const container = document.getElementById(sec.id);
+                if (!container) return;
+
+                const filtered = allCourses.filter(c => c.nhom_hien_thi && c.nhom_hien_thi.toLowerCase().includes(sec.keyword));
+                const limited = filtered.slice(0, 8); // Giới hạn 8 khóa học
+                
+                const sectionParent = container.closest('section');
+                if (limited.length === 0) {
+                    if (sectionParent) sectionParent.style.display = 'none'; // Ẩn nếu không có dữ liệu
+                    return;
+                }
+                
+                if (sectionParent) sectionParent.style.display = 'block';
+                container.innerHTML = limited.map((course, index) => generateCourseHTML(course, index)).join('');
+            });
+        };
+
+        // Hàm render giao diện danh sách khóa học chính (có phân trang)
         const renderCourses = (page) => {
+            if (!courseList) return;
             courseList.innerHTML = ''; // Xóa grid hiện tại
             
-            // Xóa class animate để trigger lại animation khi đổi trang
             courseList.classList.remove('animate-fadeIn');
             void courseList.offsetWidth; // Trigger reflow
             courseList.classList.add('animate-fadeIn');
@@ -180,78 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const coursesHTML = displayCourses.map((course, index) => {
-                let eventBadgeHTML = '';
-                if (course.su_kien) {
-                    const event = course.su_kien.trim();
-                    let badgeClass = 'bg-primary text-white'; // Default Navy
-                    let icon = '';
-                    const eventLower = event.toLowerCase();
-                    
-                    if (eventLower === 'flash sale') {
-                        badgeClass = 'bg-gradient-to-r from-red-600 via-pink-600 to-red-600 text-white pulse-fast border border-red-500/50 shadow-[0_0_15px_rgba(220,38,38,0.5)]';
-                        icon = '⚡ ';
-                    } else if (eventLower === 'hot') {
-                        badgeClass = 'bg-gradient-to-r from-orange-500 to-yellow-500 text-black wiggle border border-yellow-400 shadow-lg';
-                        icon = '🔥 ';
-                    } else if (eventLower === 'mới') {
-                        badgeClass = 'bg-emerald-500 text-white animate-bounce shadow-lg border border-emerald-400';
-                        icon = '✨ ';
-                    }
-                    
-                    eventBadgeHTML = `
-                        <div class="${badgeClass} text-xs font-extrabold px-3 py-1.5 rounded-full z-10 whitespace-nowrap uppercase tracking-wider flex items-center gap-1">
-                            ${icon}${event}
-                        </div>
-                    `;
-                }
-
-                // Add reveal-on-scroll and data-delay for staggered animation
-                const revealClasses = "reveal-on-scroll opacity-0 translate-y-4 md:translate-y-12 transition-all duration-500 md:duration-[800ms] ease-out motion-reduce:transition-none motion-reduce:opacity-100 motion-reduce:translate-y-0";
-                const delay = index * 100; // 100ms staggered delay
-
-                return `
-                    <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
-                        <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video">
-                            <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                            <!-- Badges -->
-                            <div class="absolute top-2 left-2 flex items-start gap-2 flex-wrap max-w-[90%] z-20">
-                                ${eventBadgeHTML}
-                                <div class="bg-white/95 backdrop-blur text-[11px] font-bold px-2.5 py-1.5 rounded-lg text-primary shadow-sm whitespace-nowrap border border-gray-100">
-                                    ${course.danh_muc_con || course.danh_muc_chinh || 'Khóa học'}
-                                </div>
-                            </div>
-                        </a>
-                        <div class="p-5 flex flex-col flex-grow">
-                            <a href="chi-tiet.html?id=${course.id}" class="block">
-                                <h3 class="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-cta transition">${course.ten_khoa_hoc}</h3>
-                            </a>
-                            
-                            <div class="mt-auto">
-                                <!-- Info Row (so_bai_giang & lifetime) -->
-                                <div class="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-book text-gray-400"></i> ${course.so_bai_giang || '0'} bài giảng
-                                    </div>
-                                    <div class="flex items-center gap-1.5">
-                                        <i class="fa-solid fa-clock text-gray-400"></i> Sở hữu trọn đời
-                                    </div>
-                                </div>
-                                
-                                <!-- Price -->
-                                <div class="text-center mb-4">
-                                    <span class="text-2xl font-extrabold text-red-600 block">${course.gia_moi}</span>
-                                </div>
-                                
-                                <!-- Button -->
-                                <button type="button" data-course-index="${allCourses.indexOf(course)}" class="btn-add-cart block w-full py-3 px-4 bg-slate-900 text-white font-bold text-center rounded-xl hover:bg-slate-800 transition shadow-md">
-                                    <i class="fa-solid fa-cart-shopping mr-2"></i> THÊM VÀO GIỎ HÀNG
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            const coursesHTML = displayCourses.map((course, index) => generateCourseHTML(course, index)).join('');
             
             courseList.innerHTML = coursesHTML;
             
@@ -290,6 +316,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     allCourses = data; // Lưu lại
                     filteredCourses = [...allCourses];
                     currentPage = 1;
+                    
+                    if (typeof renderSpecialSections === 'function') {
+                        renderSpecialSections();
+                    }
+                    
                     renderCourses(currentPage); // Hiển thị ban đầu
                     renderPagination();
                 } else {
