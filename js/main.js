@@ -238,7 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const sections = [
                 { id: 'newCoursesList', keyword: 'mới' },
                 { id: 'topCoursesList', keyword: 'top' },
-                { id: 'comboCoursesList', keyword: 'combo' }
+                { id: 'comboCoursesList', keyword: 'combo' },
+                { id: 'aiCoursesList', keyword: 'ai' }
             ];
 
             sections.forEach(sec => {
@@ -364,8 +365,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (breadcrumbContainer) breadcrumbContainer.classList.remove('hidden');
                     if (breadcrumbCategory) breadcrumbCategory.textContent = category;
 
-                    // Ưu tiên khớp danh_muc_con, nếu ko thì khớp danh_muc_chinh
-                    filteredCourses = allCourses.filter(c => c.danh_muc_con === category || c.danh_muc_chinh === category);
+                    // Khớp tương đối để 1 khóa học có thể thuộc nhiều danh mục (ví dụ: "Marketing, Sale")
+                    const lowerCategory = category.toLowerCase();
+                    filteredCourses = allCourses.filter(c => {
+                        const matchMain = c.danh_muc_chinh && c.danh_muc_chinh.toLowerCase().includes(lowerCategory);
+                        const matchSub = c.danh_muc_con && c.danh_muc_con.toLowerCase().includes(lowerCategory);
+                        return matchMain || matchSub;
+                    });
                 }
 
                 // Reset về trang 1
