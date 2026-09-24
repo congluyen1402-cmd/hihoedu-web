@@ -120,21 +120,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Nút Trước
             if (currentPage > 1) {
-                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${currentPage - 1}">< Trước</button>`;
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow-sm" data-page="${currentPage - 1}">< Trước</button>`;
             }
 
-            // Các trang
-            for (let i = 1; i <= totalPages; i++) {
-                if (i === currentPage) {
-                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-[#0B132B] text-white" data-page="${i}">${i}</button>`;
+            // Logic tính toán trang hiển thị
+            let startPage = 1;
+            let endPage = totalPages;
+            
+            if (totalPages > 7) {
+                if (currentPage <= 4) {
+                    endPage = 5;
+                } else if (currentPage >= totalPages - 3) {
+                    startPage = totalPages - 4;
                 } else {
-                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${i}">${i}</button>`;
+                    startPage = currentPage - 1;
+                    endPage = currentPage + 1;
                 }
+            }
+
+            // Render trang 1 và dấu ...
+            if (startPage > 1) {
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow-sm" data-page="1">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += `<span class="px-2 py-2 text-gray-500 font-bold">...</span>`;
+                }
+            }
+
+            // Các trang ở giữa
+            for (let i = startPage; i <= endPage; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-bold transition bg-[#0B132B] text-white shadow-md scale-105" data-page="${i}">${i}</button>`;
+                } else {
+                    paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow-sm" data-page="${i}">${i}</button>`;
+                }
+            }
+
+            // Render trang cuối và dấu ...
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<span class="px-2 py-2 text-gray-500 font-bold">...</span>`;
+                }
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow-sm" data-page="${totalPages}">${totalPages}</button>`;
             }
 
             // Nút Tiếp
             if (currentPage < totalPages) {
-                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100" data-page="${currentPage + 1}">Tiếp ></button>`;
+                paginationHTML += `<button class="pagination-btn px-4 py-2 rounded-lg font-medium transition bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 shadow-sm" data-page="${currentPage + 1}">Tiếp ></button>`;
             }
 
             paginationContainer.innerHTML = paginationHTML;
