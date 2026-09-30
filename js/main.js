@@ -32,6 +32,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 1.5 Mobile Drawer Logic
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+    const closeMobileDrawer = document.getElementById('closeMobileDrawer');
+
+    const toggleDrawer = (open) => {
+        if (!mobileDrawer || !mobileDrawerOverlay) return;
+        if (open) {
+            mobileDrawerOverlay.classList.remove('hidden');
+            // Timeout to allow display block to apply before transition
+            setTimeout(() => {
+                mobileDrawerOverlay.classList.remove('opacity-0');
+                mobileDrawer.classList.remove('-translate-x-full');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        } else {
+            mobileDrawerOverlay.classList.add('opacity-0');
+            mobileDrawer.classList.add('-translate-x-full');
+            setTimeout(() => {
+                mobileDrawerOverlay.classList.add('hidden');
+            }, 300);
+            document.body.style.overflow = '';
+        }
+    };
+
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDrawer(true);
+        });
+    }
+    if (closeMobileDrawer) {
+        closeMobileDrawer.addEventListener('click', () => toggleDrawer(false));
+    }
+    if (mobileDrawerOverlay) {
+        mobileDrawerOverlay.addEventListener('click', () => toggleDrawer(false));
+    }
+
+    // Close drawer when clicking a link inside it
+    if (mobileDrawer) {
+        const drawerLinks = mobileDrawer.querySelectorAll('a, .filter-btn');
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', () => toggleDrawer(false));
+        });
+    }
+
     // 2. Countdown Timer Logic
     // Set timer to end 3 days from now
     const getTargetDate = () => {
@@ -225,8 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return `
                 <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
-                    <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video">
-                        <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video bg-gray-200">
+                        <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                         <!-- Badges -->
                         <div class="absolute top-2 left-2 flex items-start gap-2 flex-wrap max-w-[90%] z-20">
                             ${eventBadgeHTML}
@@ -339,32 +386,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Fetch API
-        fetch(SHEETDB_API)
-            .then(response => response.json())
-            .then(data => {
-                courseLoading.remove();
-                if (Array.isArray(data) && data.length > 0) {
-                    allCourses = data; // Lưu lại
-                    filteredCourses = [...allCourses];
-                    currentPage = 1;
-                    
-                    if (typeof renderSpecialSections === 'function') {
-                        renderSpecialSections();
+        // Fetch API with SessionStorage Cache
+        const CACHE_KEY = 'hihoedu_courses_cache';
+        const CACHE_TTL = 3600000; // 1 hour
+
+        const loadCourses = () => {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (new Date().getTime() - parsed.timestamp < CACHE_TTL) {
+                        handleData(parsed.data);
+                        return;
                     }
-                    
-                    renderCourses(currentPage); // Hiển thị ban đầu
-                    renderPagination();
-                } else {
-                    courseList.innerHTML = '<p class="col-span-1 sm:col-span-2 lg:col-span-4 text-center text-gray-500">Chưa có khóa học nào.</p>';
+                } catch (e) {
+                    console.error('Cache parse error', e);
                 }
-            })
-            .catch(error => {
-                console.error('Error fetching courses:', error);
-                if (courseLoading) {
-                    courseLoading.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i><p class="text-red-500 font-medium">Lỗi khi tải danh sách khóa học. Vui lòng thử lại sau.</p>';
+            }
+
+            fetch(SHEETDB_API)
+                .then(response => response.json())
+                .then(data => {
+                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: new Date().getTime(),
+                        data: data
+                    }));
+                    handleData(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching courses:', error);
+                    if (courseLoading) {
+                        courseLoading.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i><p class="text-red-500 font-medium">Lỗi khi tải danh sách khóa học. Vui lòng thử lại sau.</p>';
+                    }
+                });
+        };
+
+        const handleData = (data) => {
+            if (courseLoading) courseLoading.remove();
+            if (Array.isArray(data) && data.length > 0) {
+                allCourses = data; // Lưu lại
+                filteredCourses = [...allCourses];
+                currentPage = 1;
+                
+                if (typeof renderSpecialSections === 'function') {
+                    renderSpecialSections();
                 }
-            });
+                
+                renderCourses(currentPage); // Hiển thị ban đầu
+                renderPagination();
+            } else {
+                if (courseList) courseList.innerHTML = '<p class="col-span-1 sm:col-span-2 lg:col-span-4 text-center text-gray-500">Chưa có khóa học nào.</p>';
+            }
+        };
+
+        loadCourses();
 
         // 4. Filtering Logic (Bắt sự kiện click menu)
         const filterBtns = document.querySelectorAll('.filter-btn');
