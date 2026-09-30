@@ -277,9 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <!-- Badges -->
                         <div class="absolute top-2 left-2 flex items-start gap-2 flex-wrap max-w-[90%] z-20">
                             ${eventBadgeHTML}
-                            <div class="bg-white/95 backdrop-blur text-[11px] font-bold px-2.5 py-1.5 rounded-lg text-primary shadow-sm whitespace-nowrap border border-gray-100">
-                                ${course.danh_muc_con || course.danh_muc_chinh || 'Khóa học'}
-                            </div>
                         </div>
                     </a>
                     <div class="p-5 flex flex-col flex-grow">
