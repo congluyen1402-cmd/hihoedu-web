@@ -628,7 +628,7 @@
                         if (course) {
                             // Cập nhật Hero Info
                             document.getElementById('courseTitle').textContent = course.ten_khoa_hoc || 'Đang cập nhật';
-                            document.getElementById('courseImage').src = course.anh_bia || '';
+                            document.getElementById('courseImage').src = (course.anh_bia || '').trim();
                             document.getElementById('courseOldPrice').textContent = course.gia_cu || '';
                             document.getElementById('courseNewPrice').textContent = course.gia_moi || '';
                             
