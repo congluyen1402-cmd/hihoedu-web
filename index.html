@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     
         <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?v=2"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -40,7 +40,7 @@
         }
     </script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
     
@@ -266,7 +266,7 @@
         <div id="scrollProgress" class="h-[2px] bg-orange-500 w-0 absolute bottom-0 left-0 transition-all duration-75 z-50"></div>
     </header>
 
-    <!-- Hero Section (Minimalist) -->
+            <!-- Hero Section (Minimalist) -->
     <section class="bg-gradient-to-br from-gray-50 to-white py-20 overflow-hidden">
         <div class="container mx-auto px-4">
             <div class="flex flex-col lg:flex-row items-center gap-12">
@@ -291,26 +291,8 @@
                 <!-- Right Image -->
                 <div class="lg:w-1/2 relative" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                     <!-- Optimized Hero Graphic & Trust Indicators -->
-                    <div class="relative w-full aspect-[4/3] bg-gradient-to-tr from-slate-100 to-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex items-center justify-center p-8">
-                        <img src="images/banner.jpg" alt="HihoEdu Learning Platform" fetchpriority="high" width="800" height="600" class="relative z-10 w-full h-full object-contain transform hover:scale-105 transition duration-500">
-                        
-                        <!-- Trust Indicator 1 -->
-                        <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 z-20 animate-fade-in animation-delay-500">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600"><i class="fa-solid fa-layer-group text-sm"></i></div>
-                            <div class="font-bold text-sm text-gray-800">900+ Khóa học</div>
-                        </div>
-
-                        <!-- Trust Indicator 2 -->
-                        <div class="absolute bottom-10 left-4 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 z-20 animate-fade-in animation-delay-1000">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600"><i class="fa-solid fa-check text-sm"></i></div>
-                            <div class="font-bold text-sm text-gray-800">Cập nhật 2026</div>
-                        </div>
-
-                        <!-- Trust Indicator 3 -->
-                        <div class="absolute top-1/2 -right-4 bg-white/90 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 z-20 animate-fade-in animation-delay-1500">
-                            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600"><i class="fa-solid fa-infinity text-sm"></i></div>
-                            <div class="font-bold text-sm text-gray-800">Học trọn đời</div>
-                        </div>
+                    <div class="relative w-full aspect-[4/3] bg-gradient-to-tr from-slate-100 to-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 flex items-center justify-center p-0">
+                        <img src="images/banner.jpg" alt="HihoEdu Learning Platform" fetchpriority="high" width="800" height="600" class="relative z-10 w-full h-full object-cover transform hover:scale-105 transition duration-500">
                     </div>
                 </div>
             </div>
