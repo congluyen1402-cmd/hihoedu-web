@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Fetch Dynamic Courses from SheetDB
     const courseList = document.getElementById('courseList');
     const courseLoading = document.getElementById('courseLoading');
-    const SHEETDB_API = 'https://sheetdb.io/api/v1/fcdrn35wr2yla'; // <-- THAY LINK SHEETDB VÀO ĐÂY
+    const _0x1a2b = ['aHR0cHM6Ly9zaGVldGRiLmlvL2FwaS92MS9mY2RybjM1d3IyeWxh']; const SHEETDB_API = atob(_0x1a2b[0]); // <-- THAY LINK SHEETDB VÀO ĐÂY
 
     if (courseList && courseLoading) {
         // Check if the API link is still the placeholder or invalid
@@ -612,3 +612,13 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollReveal();
     }
 });
+
+// Security Anti-Inspect
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.onkeydown = function(e) {
+    if(e.keyCode == 123) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+};

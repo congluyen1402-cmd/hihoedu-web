@@ -357,11 +357,11 @@
                         </div>
                         <div class="flex justify-between items-center py-4 bg-gray-50 px-4 -mx-4">
                             <span class="text-gray-500 font-bold">Số tài khoản:</span>
-                            <span class="text-gray-800 font-bold">108884822302</span>
+                            <span class="text-gray-800 font-bold" id="s_acc"></span>
                         </div>
                         <div class="flex justify-between items-center py-4 border-b border-gray-100">
                             <span class="text-gray-500 font-bold">Ngân hàng:</span>
-                            <span class="text-gray-800 text-right max-w-[200px]">VietinBank</span>
+                            <span class="text-gray-800 text-right max-w-[200px]" id="s_bank"></span>
                         </div>
                         <div class="flex justify-between items-center py-4 border-b border-gray-100">
                             <span class="text-gray-500 font-bold">Số tiền:</span>
@@ -497,7 +497,12 @@
             
             // Render QR Code API
             // URL: https://img.vietqr.io/image/VietinBank-108884822302-compact2.png?amount={amount}&addInfo={addInfo}&accountName=TRAN%20CONG%20LUYEN
-            const qrUrl = `https://img.vietqr.io/image/VietinBank-108884822302-compact2.png?amount=${orderData.total}&addInfo=${orderId}&accountName=TRAN%20CONG%20LUYEN`;
+                        const _b = atob('VmlldGluQmFuaw==');
+            const _a = atob('MTA4ODg0ODIyMzAy');
+            const _n = atob('VFJBTiUyMENPTkclMjBMVVlFTg==');
+            document.getElementById('s_acc').innerText = _a;
+            document.getElementById('s_bank').innerText = _b;
+            const qrUrl = `https://img.vietqr.io/image/${_b}-${_a}-compact2.png?amount=${orderData.total}&addInfo=${orderId}&accountName=${_n}`;
             const qrImg = document.getElementById('qrImage');
             const qrLoading = document.getElementById('qrLoading');
             
