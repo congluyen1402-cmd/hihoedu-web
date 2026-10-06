@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <div class="${revealClasses} bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group flex flex-col h-full" data-delay="${delay}">
                     <a href="chi-tiet.html?id=${course.id}" class="block relative overflow-hidden aspect-video bg-gray-200">
-                        <img src="${course.anh_bia}" alt="${course.ten_khoa_hoc}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                        <img src="${(course.anh_bia || '').trim()}" alt="${course.ten_khoa_hoc}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                         <!-- Badges -->
                         <div class="absolute top-2 left-2 flex items-start gap-2 flex-wrap max-w-[90%] z-20">
                             ${eventBadgeHTML}
