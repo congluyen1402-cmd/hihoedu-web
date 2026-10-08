@@ -510,10 +510,11 @@
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
                 btn.disabled = true;
 
-                const _0x9f8e = ['aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6RVh2RkowZUpmX0FiR09MdlBTWnk3X0NhOHZib1R1WHFwX2dRd2pMQ0ZVMFhfYWpDVVIwWVMzMnY4eDc1S0tBMUVUUS9leGVj'];
+                const _0x9f8e = ['aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6RVh2RkowZUpmX0FiR09MdlBTWnk3X0NhOHZib1R1WHFwX2dRd2pMQ0ZVMFhfYWpDVVIwWVNzMnY4eDc1S0tBMUVUUS9leGVj'];
                 fetch(atob(_0x9f8e[0]), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Dùng text/plain để tránh lỗi CORS Preflight
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'new_order',
                         data: {
@@ -526,15 +527,11 @@
                         }
                     })
                 })
-                .then(response => response.json())
-                .then(result => {
-                    // Chuyển hướng
+                .then(() => {
                     window.location.href = `hoan-tat.html?orderId=${orderId}`;
                 })
                 .catch(error => {
                     console.error('Error saving order:', error);
-                    alert('Có lỗi xảy ra kết nối hệ thống. Vẫn tiếp tục tạo đơn...');
-                    // Fallback: Nếu lỗi vẫn cho qua trang hoàn tất để khách lấy mã QR
                     window.location.href = `hoan-tat.html?orderId=${orderId}`;
                 });
             });
