@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Xử lý sự kiện click "Thêm vào giỏ hàng" bằng Event Delegation
-        courseList.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
             const btn = e.target.closest('.btn-add-cart');
             if (btn) {
                 e.preventDefault();
