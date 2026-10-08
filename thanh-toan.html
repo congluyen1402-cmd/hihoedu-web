@@ -167,6 +167,8 @@
                         <button class="absolute inset-y-1.5 right-1.5 px-6 bg-[#0B132B] hover:bg-blue-700 text-white font-bold rounded-full text-sm transition-colors shadow-md">
                             Tìm kiếm
                         </button>
+                        <!-- Desktop Search Dropdown -->
+                        <div id="searchDropdownDesktop" class="absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 z-[60] hidden max-h-[400px] overflow-y-auto custom-scrollbar"></div>
                     </div>
                 </div>
 
@@ -200,9 +202,11 @@
             <div class="lg:hidden pb-4 pt-1">
                 <div class="relative">
                     <input type="text" id="mobileSearchInput" placeholder="Tìm kiếm khóa học..." class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all shadow-inner">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
+                    <!-- Mobile Search Dropdown -->
+                    <div id="searchDropdownMobile" class="absolute top-full left-0 mt-2 w-full bg-white rounded-xl shadow-xl border border-gray-100 z-[60] hidden max-h-[300px] overflow-y-auto custom-scrollbar"></div>
                 </div>
             </div>
         </div>
