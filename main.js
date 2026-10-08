@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Fetch Dynamic Courses from SheetDB
     const courseList = document.getElementById('courseList');
     const courseLoading = document.getElementById('courseLoading');
-    const SHEETDB_API = 'https://sheetdb.io/api/v1/fcdrn35wr2yla'; // <-- THAY LINK SHEETDB VÀO ĐÂY
+    const _0x1a2b = ['aHR0cHM6Ly9zaGVldGRiLmlvL2FwaS92MS9mY2RybjM1d3IyeWxh']; const SHEETDB_API = atob(_0x1a2b[0]); // <-- THAY LINK SHEETDB VÀO ĐÂY
 
     if (courseList && courseLoading) {
         // Check if the API link is still the placeholder or invalid
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Xử lý sự kiện click "Thêm vào giỏ hàng" bằng Event Delegation
-        courseList.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
             const btn = e.target.closest('.btn-add-cart');
             if (btn) {
                 e.preventDefault();
@@ -493,36 +493,75 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // 5. Search Logic
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
+                // 5. Search Logic (Live Autocomplete)
+        const setupLiveSearch = (inputId, dropdownId) => {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            if (!input || !dropdown) return;
+            
+            input.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
                 
-                const breadcrumbCategory = document.getElementById('breadcrumbCategory');
-                const breadcrumbContainer = document.getElementById('breadcrumbContainer');
-
                 if (query === '') {
-                    filteredCourses = [...allCourses];
-                    if (breadcrumbContainer) breadcrumbContainer.classList.add('hidden');
-                } else {
-                    filteredCourses = allCourses.filter(c => {
-                        const nameMatch = c.ten_khoa_hoc && c.ten_khoa_hoc.toLowerCase().includes(query);
-                        const catMainMatch = c.danh_muc_chinh && c.danh_muc_chinh.toLowerCase().includes(query);
-                        const catSubMatch = c.danh_muc_con && c.danh_muc_con.toLowerCase().includes(query);
-                        return nameMatch || catMainMatch || catSubMatch;
-                    });
-                    
-                    if (breadcrumbContainer) breadcrumbContainer.classList.remove('hidden');
-                    if (breadcrumbCategory) breadcrumbCategory.textContent = `Tìm kiếm: "${query}"`;
+                    dropdown.classList.add('hidden');
+                    return;
                 }
-
-                // Cập nhật giao diện với trang 1
-                currentPage = 1;
-                renderCourses(currentPage);
-                renderPagination();
+                
+                // Fuzzy search filtering
+                const results = allCourses.filter(c => {
+                    const nameMatch = c.ten_khoa_hoc && c.ten_khoa_hoc.toLowerCase().includes(query);
+                    const catMainMatch = c.danh_muc_chinh && c.danh_muc_chinh.toLowerCase().includes(query);
+                    const catSubMatch = c.danh_muc_con && c.danh_muc_con.toLowerCase().includes(query);
+                    return nameMatch || catMainMatch || catSubMatch;
+                }).slice(0, 8); // Giới hạn 8 kết quả
+                
+                dropdown.innerHTML = '';
+                
+                if (results.length > 0) {
+                    let html = '<div class="p-2">';
+                    results.forEach(course => {
+                        const coverImg = (course.anh_bia || '').trim() || 'https://placehold.co/400x300/0f172a/ffffff?text=HihoEdu';
+                        const originalPriceStr = course.gia_goc || '0đ';
+                        const currentPriceStr = course.gia_ban || '0đ';
+                        
+                        html += '<a href="chi-tiet.html?id=' + encodeURIComponent(course.ten_khoa_hoc) + '" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition cursor-pointer group">' +
+                                '<img src="' + coverImg + '" alt="Course" class="w-16 h-12 object-cover rounded-md shadow-sm">' +
+                                '<div class="flex-1">' +
+                                    '<h4 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition">' + course.ten_khoa_hoc + '</h4>' +
+                                    '<div class="flex items-center gap-2 mt-1">' +
+                                        '<span class="text-xs font-extrabold text-red-600">' + currentPriceStr + '</span>' +
+                                        '<span class="text-[10px] text-gray-400 line-through">' + originalPriceStr + '</span>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</a>';
+                    });
+                    html += '</div>';
+                    dropdown.innerHTML = html;
+                } else {
+                    dropdown.innerHTML = '<div class="p-6 text-center text-gray-500 text-sm"><i class="fa-solid fa-magnifying-glass mb-2 text-xl text-gray-300 block"></i>Không tìm thấy khóa học nào phù hợp.</div>';
+                }
+                
+                dropdown.classList.remove('hidden');
             });
-        }
+            
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
+            
+            // Re-show dropdown on input focus if there is text
+            input.addEventListener('focus', () => {
+                if (input.value.trim() !== '') {
+                    dropdown.classList.remove('hidden');
+                }
+            });
+        };
+        
+        setupLiveSearch('searchInput', 'searchDropdownDesktop');
+        setupLiveSearch('mobileSearchInput', 'searchDropdownMobile');
     }
 
     // ==========================================
@@ -612,3 +651,13 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollReveal();
     }
 });
+
+// Security Anti-Inspect
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.onkeydown = function(e) {
+    if(e.keyCode == 123) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { return false; }
+    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { return false; }
+};
