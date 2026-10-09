@@ -88,13 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return target.getTime();
     };
 
-    // Keep target date in localStorage so it doesn't reset on every refresh
-    let countDownDate = localStorage.getItem('hihoedu_countdown');
-    if (!countDownDate || new Date().getTime() > parseInt(countDownDate)) {
+        // Keep target date in localStorage so it doesn't reset on every refresh
+    let countDownDate = null;
+    try {
+        countDownDate = localStorage.getItem('hihoedu_countdown');
+        if (!countDownDate || new Date().getTime() > parseInt(countDownDate)) {
+            countDownDate = getTargetDate();
+            localStorage.setItem('hihoedu_countdown', countDownDate);
+        } else {
+            countDownDate = parseInt(countDownDate);
+        }
+    } catch (e) {
+        // Fallback if localStorage is blocked
+        console.warn('localStorage is blocked', e);
         countDownDate = getTargetDate();
-        localStorage.setItem('hihoedu_countdown', countDownDate);
-    } else {
-        countDownDate = parseInt(countDownDate);
     }
 
     const updateTimer = () => {
@@ -102,8 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const distance = countDownDate - now;
 
         if (distance < 0) {
-            // Reset if expired
-            localStorage.removeItem('hihoedu_countdown');
+                        // Reset if expired
+            try {
+                localStorage.removeItem('hihoedu_countdown');
+            } catch (e) {}
             return;
         }
 
