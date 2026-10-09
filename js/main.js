@@ -143,16 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const courseLoading = document.getElementById('courseLoading');
     const _0x1a2b = ['aHR0cHM6Ly9zaGVldGRiLmlvL2FwaS92MS9mY2RybjM1d3IyeWxh']; const SHEETDB_API = atob(_0x1a2b[0]); // <-- THAY LINK SHEETDB VÀO ĐÂY
 
-    if (courseList && courseLoading) {
+    if (true) {
         // Check if the API link is still the placeholder or invalid
         if (SHEETDB_API.includes('[DÁN_LINK') || !SHEETDB_API.startsWith('http')) {
             console.warn('HihoEdu: Chưa cập nhật link API SheetDB.');
-            courseLoading.innerHTML = `
-                <i class="fa-solid fa-triangle-exclamation text-5xl text-yellow-500 mb-4"></i>
-                <p class="text-yellow-600 font-medium text-center text-lg">
-                    Lỗi: Chưa điền Link API.<br>
-                    Vui lòng mở file <b>js/main.js</b> (dòng 88) và thay thế biến <b>SHEETDB_API</b> bằng link SheetDB thật của bạn!
-                </p>`;
+            if (courseLoading) {
+                courseLoading.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-5xl text-yellow-500 mb-4"></i>
+                    <p class="text-yellow-600 font-medium text-center text-lg">
+                        Lỗi: Chưa điền Link API.<br>
+                        Vui lòng mở file <b>js/main.js</b> (dòng 88) và thay thế biến <b>SHEETDB_API</b> bằng link SheetDB thật của bạn!
+                    </p>`;
+            }
             return; // Dừng thực thi fetch
         }
 
@@ -536,10 +538,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     let html = '<div class="p-2">';
                     results.forEach(course => {
                         const coverImg = (course.anh_bia || '').trim() || 'https://placehold.co/400x300/0f172a/ffffff?text=HihoEdu';
-                        const originalPriceStr = course.gia_goc || '0đ';
-                        const currentPriceStr = course.gia_ban || '0đ';
+                        const originalPriceStr = course.gia_cu || '0đ';
+                        const currentPriceStr = course.gia_moi || '0đ';
                         
-                        html += '<a href="chi-tiet.html?id=' + encodeURIComponent(course.ten_khoa_hoc) + '" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition cursor-pointer group">' +
+                        html += '<a href="chi-tiet.html?id=' + encodeURIComponent(course.id) + '" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition cursor-pointer group">' +
                                 '<img src="' + coverImg + '" alt="Course" class="w-16 h-12 object-cover rounded-md shadow-sm">' +
                                 '<div class="flex-1">' +
                                     '<h4 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition">' + course.ten_khoa_hoc + '</h4>' +
