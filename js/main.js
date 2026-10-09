@@ -88,13 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return target.getTime();
     };
 
-    // Keep target date in localStorage so it doesn't reset on every refresh
-    let countDownDate = localStorage.getItem('hihoedu_countdown');
-    if (!countDownDate || new Date().getTime() > parseInt(countDownDate)) {
+        // Keep target date in localStorage so it doesn't reset on every refresh
+    let countDownDate = null;
+    try {
+        countDownDate = localStorage.getItem('hihoedu_countdown');
+        if (!countDownDate || new Date().getTime() > parseInt(countDownDate)) {
+            countDownDate = getTargetDate();
+            localStorage.setItem('hihoedu_countdown', countDownDate);
+        } else {
+            countDownDate = parseInt(countDownDate);
+        }
+    } catch (e) {
+        // Fallback if localStorage is blocked
+        console.warn('localStorage is blocked', e);
         countDownDate = getTargetDate();
-        localStorage.setItem('hihoedu_countdown', countDownDate);
-    } else {
-        countDownDate = parseInt(countDownDate);
     }
 
     const updateTimer = () => {
@@ -102,8 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const distance = countDownDate - now;
 
         if (distance < 0) {
-            // Reset if expired
-            localStorage.removeItem('hihoedu_countdown');
+                        // Reset if expired
+            try {
+                localStorage.removeItem('hihoedu_countdown');
+            } catch (e) {}
             return;
         }
 
@@ -388,26 +397,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const CACHE_TTL = 3600000; // 1 hour
 
         const loadCourses = () => {
-            const cached = sessionStorage.getItem(CACHE_KEY);
-            if (cached) {
-                try {
+            let cached = null;
+            try {
+                cached = sessionStorage.getItem(CACHE_KEY);
+                if (cached) {
                     const parsed = JSON.parse(cached);
                     if (new Date().getTime() - parsed.timestamp < CACHE_TTL) {
                         handleData(parsed.data);
                         return;
                     }
-                } catch (e) {
-                    console.error('Cache parse error', e);
                 }
+            } catch (e) {
+                console.warn('SessionStorage not available or parse error', e);
             }
 
             fetch(SHEETDB_API)
                 .then(response => response.json())
                 .then(data => {
-                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-                        timestamp: new Date().getTime(),
-                        data: data
-                    }));
+                    try {
+                        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                            timestamp: new Date().getTime(),
+                            data: data
+                        }));
+                    } catch (e) {
+                        console.warn('SessionStorage setItem failed', e);
+                    }
                     handleData(data);
                 })
                 .catch(error => {
@@ -519,29 +533,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 dropdown.innerHTML = '';
                 
                 if (results.length > 0) {
-                    let html = <div class="p-2">;
+                    let html = '<div class="p-2">';
                     results.forEach(course => {
                         const coverImg = (course.anh_bia || '').trim() || 'https://placehold.co/400x300/0f172a/ffffff?text=HihoEdu';
                         const originalPriceStr = course.gia_goc || '0đ';
                         const currentPriceStr = course.gia_ban || '0đ';
                         
-                        html += 
-                            <a href="chi-tiet.html?id= + encodeURIComponent(course.ten_khoa_hoc) + " class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition cursor-pointer group">
-                                <img src=" + coverImg + " alt="Course" class="w-16 h-12 object-cover rounded-md shadow-sm">
-                                <div class="flex-1">
-                                    <h4 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition"> + course.ten_khoa_hoc + </h4>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-xs font-extrabold text-red-600"> + currentPriceStr + </span>
-                                        <span class="text-[10px] text-gray-400 line-through"> + originalPriceStr + </span>
-                                    </div>
-                                </div>
-                            </a>
-                        ;
+                        html += '<a href="chi-tiet.html?id=' + encodeURIComponent(course.ten_khoa_hoc) + '" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition cursor-pointer group">' +
+                                '<img src="' + coverImg + '" alt="Course" class="w-16 h-12 object-cover rounded-md shadow-sm">' +
+                                '<div class="flex-1">' +
+                                    '<h4 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-blue-600 transition">' + course.ten_khoa_hoc + '</h4>' +
+                                    '<div class="flex items-center gap-2 mt-1">' +
+                                        '<span class="text-xs font-extrabold text-red-600">' + currentPriceStr + '</span>' +
+                                        '<span class="text-[10px] text-gray-400 line-through">' + originalPriceStr + '</span>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</a>';
                     });
-                    html += </div>;
+                    html += '</div>';
                     dropdown.innerHTML = html;
                 } else {
-                    dropdown.innerHTML = <div class="p-6 text-center text-gray-500 text-sm"><i class="fa-solid fa-magnifying-glass mb-2 text-xl text-gray-300 block"></i>Không tìm thấy khóa học nào phù hợp.</div>;
+                    dropdown.innerHTML = '<div class="p-6 text-center text-gray-500 text-sm"><i class="fa-solid fa-magnifying-glass mb-2 text-xl text-gray-300 block"></i>Không tìm thấy khóa học nào phù hợp.</div>';
                 }
                 
                 dropdown.classList.remove('hidden');
