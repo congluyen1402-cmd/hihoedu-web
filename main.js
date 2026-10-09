@@ -388,26 +388,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const CACHE_TTL = 3600000; // 1 hour
 
         const loadCourses = () => {
-            const cached = sessionStorage.getItem(CACHE_KEY);
-            if (cached) {
-                try {
+            let cached = null;
+            try {
+                cached = sessionStorage.getItem(CACHE_KEY);
+                if (cached) {
                     const parsed = JSON.parse(cached);
                     if (new Date().getTime() - parsed.timestamp < CACHE_TTL) {
                         handleData(parsed.data);
                         return;
                     }
-                } catch (e) {
-                    console.error('Cache parse error', e);
                 }
+            } catch (e) {
+                console.warn('SessionStorage not available or parse error', e);
             }
 
             fetch(SHEETDB_API)
                 .then(response => response.json())
                 .then(data => {
-                    sessionStorage.setItem(CACHE_KEY, JSON.stringify({
-                        timestamp: new Date().getTime(),
-                        data: data
-                    }));
+                    try {
+                        sessionStorage.setItem(CACHE_KEY, JSON.stringify({
+                            timestamp: new Date().getTime(),
+                            data: data
+                        }));
+                    } catch (e) {
+                        console.warn('SessionStorage setItem failed', e);
+                    }
                     handleData(data);
                 })
                 .catch(error => {
