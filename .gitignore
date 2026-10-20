@@ -1,0 +1,8 @@
+node_modules/
+tailwindcss.exe
+.vscode/
+raw-*.js
+live-main*.js
+test_*.html
+old_index.html
+lh-report.json

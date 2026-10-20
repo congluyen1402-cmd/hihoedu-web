@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HihoEdu Analytics – Bảng điều khiển dữ liệu</title>
+    <meta name="description" content="Bảng điều khiển phân tích dữ liệu HihoEdu: lượt truy cập, sản phẩm bán chạy, phễu chuyển đổi, nguồn truy cập và hành vi khách hàng.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+    <div class="bg-orbs"><span></span><span></span><span></span></div>
+    <div class="bg-grid"></div>
+    <div class="loader" id="loader"></div>
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <div class="brand-logo"><i class="fa-solid fa-chart-line"></i></div>
+            <div>
+                <div class="brand-name">HihoEdu</div>
+                <div class="brand-sub">Analytics Center</div>
+            </div>
+        </div>
+        <nav class="nav" id="nav">
+            <div class="nav-label">Phân tích</div>
+            <button class="nav-btn active" data-tab="overview" id="navOverview"><i class="fa-solid fa-gauge-high"></i> Tổng quan</button>
+            <button class="nav-btn" data-tab="products" id="navProducts"><i class="fa-solid fa-box-open"></i> Sản phẩm</button>
+            <button class="nav-btn" data-tab="traffic" id="navTraffic"><i class="fa-solid fa-globe"></i> Nguồn truy cập</button>
+            <button class="nav-btn" data-tab="behavior" id="navBehavior"><i class="fa-solid fa-route"></i> Hành vi khách</button>
+            <button class="nav-btn" data-tab="orders" id="navOrders"><i class="fa-solid fa-receipt"></i> Đơn hàng</button>
+            <div class="nav-label">Giám sát</div>
+            <button class="nav-btn" data-tab="realtime" id="navRealtime"><i class="fa-solid fa-satellite-dish"></i> Thời gian thực <span class="nav-badge" id="rtBadge">LIVE</span></button>
+        </nav>
+        <div class="sidebar-foot">
+            <div class="mode-pill" id="modePill">
+                <span class="mode-dot"></span>
+                <div><b id="modeTitle">Dữ liệu mẫu</b><small id="modeSub">Chưa kết nối backend</small></div>
+            </div>
+            <button class="btn" id="btnOpenSettings"><i class="fa-solid fa-gear"></i> Cài đặt kết nối</button>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle" aria-label="Mở menu"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <h1 class="page-title" id="pageTitle">Tổng quan kinh doanh</h1>
+                    <div class="page-sub" id="pageSub">Đang tải dữ liệu...</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="seg" id="rangeSeg">
+                    <button data-range="today" id="rangeToday">Hôm nay</button>
+                    <button data-range="yesterday" id="rangeYesterday">Hôm qua</button>
+                    <button data-range="7d" id="range7d">7 ngày</button>
+                    <button data-range="30d" class="active" id="range30d">30 ngày</button>
+                    <button data-range="90d" id="range90d">90 ngày</button>
+                    <button data-range="month" id="rangeMonth">Tháng này</button>
+                    <button data-range="custom" id="rangeCustom"><i class="fa-regular fa-calendar"></i></button>
+                </div>
+                <div class="custom-range" id="customRange">
+                    <input type="date" id="dateFrom" aria-label="Từ ngày">
+                    <span>→</span>
+                    <input type="date" id="dateTo" aria-label="Đến ngày">
+                    <button class="btn btn-sm btn-primary" id="btnApplyRange">Áp dụng</button>
+                </div>
+                <button class="btn btn-icon" id="btnRefresh" title="Làm mới dữ liệu"><i class="fa-solid fa-rotate"></i></button>
+                <button class="btn" id="btnExport" title="Xuất dữ liệu thô CSV"><i class="fa-solid fa-file-arrow-down"></i> <span>Xuất CSV</span></button>
+            </div>
+        </header>
+
+        <div class="banner" id="demoBanner">
+            <i class="fa-solid fa-flask"></i>
+            <div><b>Bạn đang xem DỮ LIỆU MẪU.</b> Kết nối backend Google Apps Script để xem số liệu thật của website.</div>
+            <button class="btn btn-primary btn-sm" id="btnBannerConnect"><i class="fa-solid fa-plug"></i> Kết nối ngay</button>
+        </div>
+
+        <!-- ============ VIEW: OVERVIEW ============ -->
+        <section class="view active" id="view-overview">
+            <div class="grid g-3">
+                <div class="card quick">
+                    <div class="quick-icon ic" style="background:rgba(245,158,11,.14);color:#f59e0b"><i class="fa-solid fa-sun"></i></div>
+                    <div><div class="quick-label">Hôm nay</div><div class="quick-val" id="qToday">–</div><div class="quick-meta" id="qTodayMeta"></div></div>
+                </div>
+                <div class="card quick">
+                    <div class="quick-icon ic" style="background:rgba(139,92,246,.15);color:#a78bfa"><i class="fa-solid fa-calendar-week"></i></div>
+                    <div><div class="quick-label">7 ngày qua</div><div class="quick-val" id="qWeek">–</div><div class="quick-meta" id="qWeekMeta"></div></div>
+                </div>
+                <div class="card quick">
+                    <div class="quick-icon ic" style="background:rgba(34,211,238,.13);color:#22d3ee"><i class="fa-solid fa-calendar-days"></i></div>
+                    <div><div class="quick-label">30 ngày qua</div><div class="quick-val" id="qMonth">–</div><div class="quick-meta" id="qMonthMeta"></div></div>
+                </div>
+            </div>
+
+            <div class="grid kpi-grid" id="kpiGrid"></div>
+
+            <div class="grid g-2-1">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="card-title"><span class="ic"><i class="fa-solid fa-chart-area"></i></span><div>Lưu lượng truy cập<div class="card-sub">Lượt xem, khách & phiên theo thời gian</div></div></div>
+                        <div class="table-tools">
+                            <div class="seg sm" id="metricSeg">
+                                <button data-metric="traffic" class="active">Truy cập</button>
+                                <button data-metric="revenue">Doanh thu</button>
+                            </div>
+                            <div class="seg sm" id="granSeg">
+                                <button data-gran="hour">Giờ</button>
+                                <button data-gran="day" class="active">Ngày</button>
+                                <button data-gran="week">Tuần</button>
+                                <button data-gran="month">Tháng</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-box lg"><canvas id="chartTraffic"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <div class="card-title"><span class="ic violet"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div>Gợi ý thông minh<div class="card-sub">Tự động phân tích từ dữ liệu</div></div></div>
+                    </div>
+                    <div class="insights" id="insights"></div>
+                </div>
+            </div>
+
+            <div class="grid g-3">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-filter"></i></span><div>Phễu chuyển đổi<div class="card-sub">Từ truy cập đến thanh toán</div></div></div></div>
+                    <div class="funnel" id="funnel"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-trophy"></i></span><div>Bán chạy nhất<div class="card-sub">Theo số lượng đơn</div></div></div><button class="btn btn-sm" data-goto="products">Xem tất cả</button></div>
+                    <div class="rank-list" id="miniBest"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic cyan"><i class="fa-solid fa-eye"></i></span><div>Xem nhiều nhất<div class="card-sub">Lượt xem trang chi tiết</div></div></div><button class="btn btn-sm" data-goto="products">Xem tất cả</button></div>
+                    <div class="rank-list" id="miniViewed"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title"><span class="ic red"><i class="fa-solid fa-fire"></i></span><div>Bản đồ nhiệt giờ vàng<div class="card-sub">Lượt xem trang theo ngày trong tuần × giờ — biết lúc nào nên đăng bài / chạy quảng cáo</div></div></div>
+                    <div class="hm-legend">Ít <span style="background:rgba(245,158,11,.1)"></span><span style="background:rgba(245,158,11,.35)"></span><span style="background:rgba(245,158,11,.65)"></span><span style="background:rgba(244,63,94,.95)"></span> Nhiều</div>
+                </div>
+                <div class="heatmap" id="heatmap"></div>
+            </div>
+        </section>
+
+        <!-- ============ VIEW: PRODUCTS ============ -->
+        <section class="view" id="view-products">
+            <div class="grid g-2">
+                <div class="card">
+                    <div class="card-head">
+                        <div class="card-title"><span class="ic"><i class="fa-solid fa-ranking-star"></i></span><div>Top 10 bán chạy nhất<div class="card-sub">Sản phẩm mang lại nhiều đơn / doanh thu nhất</div></div></div>
+                        <div class="seg sm" id="sellerSeg"><button data-by="qty" class="active">Số lượng</button><button data-by="revenue">Doanh thu</button></div>
+                    </div>
+                    <div class="chart-box lg"><canvas id="chartBest"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head">
+                        <div class="card-title"><span class="ic red"><i class="fa-solid fa-arrow-trend-down"></i></span><div>Bán ít nhất / chưa bán được<div class="card-sub">Cần xem lại giá, mô tả hoặc quảng bá thêm</div></div></div>
+                    </div>
+                    <div class="rank-list" id="worstList" style="max-height:340px;overflow-y:auto"></div>
+                </div>
+            </div>
+
+            <div class="grid g-3">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic cyan"><i class="fa-solid fa-eye"></i></span><div>Xem nhiều nhất<div class="card-sub">Lượt xem trang chi tiết</div></div></div></div>
+                    <div class="chart-box"><canvas id="chartViewed"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic violet"><i class="fa-solid fa-arrow-pointer"></i></span><div>Được nhấp nhiều nhất<div class="card-sub">Click từ trang chủ, tìm kiếm, danh mục</div></div></div></div>
+                    <div class="chart-box"><canvas id="chartClicked"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-chart-pie"></i></span><div>Doanh thu theo danh mục<div class="card-sub">Danh mục chính của khóa học</div></div></div></div>
+                    <div class="chart-box"><canvas id="chartCategory"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom:18px">
+                <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-lightbulb"></i></span><div>Cơ hội tăng doanh thu<div class="card-sub">Nhiều người xem nhưng tỷ lệ mua thấp — nên tối ưu giá / nội dung / thêm ưu đãi</div></div></div></div>
+                <div class="table-wrap" id="oppTable"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title"><span class="ic blue"><i class="fa-solid fa-table-list"></i></span><div>Hiệu suất toàn bộ sản phẩm<div class="card-sub">Bấm vào tiêu đề cột để sắp xếp</div></div></div>
+                    <div class="table-tools">
+                        <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input class="input" id="productSearch" placeholder="Tìm khóa học..."></div>
+                        <button class="btn btn-sm" id="btnExportProducts"><i class="fa-solid fa-file-excel"></i> Xuất Excel</button>
+                    </div>
+                </div>
+                <div class="table-wrap" id="productTable" style="max-height:620px;overflow-y:auto"></div>
+            </div>
+        </section>
+
+        <!-- ============ VIEW: TRAFFIC ============ -->
+        <section class="view" id="view-traffic">
+            <div class="grid g-1-2">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-share-nodes"></i></span><div>Nguồn truy cập<div class="card-sub">Khách đến từ đâu</div></div></div></div>
+                    <div class="chart-box"><canvas id="chartSources"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic violet"><i class="fa-solid fa-table"></i></span><div>Hiệu quả theo kênh<div class="card-sub">Kênh nào mang lại đơn hàng thật</div></div></div></div>
+                    <div class="table-wrap" id="sourceTable"></div>
+                </div>
+            </div>
+            <div class="grid g-3">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic cyan"><i class="fa-solid fa-mobile-screen"></i></span><div>Thiết bị</div></div></div>
+                    <div class="chart-box sm"><canvas id="chartDevices"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic blue"><i class="fa-brands fa-chrome"></i></span><div>Trình duyệt</div></div></div>
+                    <div class="chart-box sm"><canvas id="chartBrowsers"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-user-plus"></i></span><div>Khách mới & quay lại</div></div></div>
+                    <div class="chart-box sm"><canvas id="chartNewRet"></canvas></div>
+                </div>
+            </div>
+            <div class="grid g-2">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-bullhorn"></i></span><div>Chiến dịch quảng cáo (UTM)<div class="card-sub">Gắn ?utm_source=...&utm_campaign=... vào link quảng cáo</div></div></div></div>
+                    <div class="table-wrap" id="campaignTable"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic red"><i class="fa-solid fa-link"></i></span><div>Trang giới thiệu (Referrer)</div></div></div>
+                    <div class="table-wrap" id="refTable"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-head"><div class="card-title"><span class="ic blue"><i class="fa-solid fa-file-lines"></i></span><div>Trang được xem nhiều nhất<div class="card-sub">Lượt xem, thời gian xem trung bình & độ sâu cuộn</div></div></div></div>
+                <div class="table-wrap" id="pageTable"></div>
+            </div>
+        </section>
+
+        <!-- ============ VIEW: BEHAVIOR ============ -->
+        <section class="view" id="view-behavior">
+            <div class="card" style="margin-bottom:18px">
+                <div class="card-head"><div class="card-title"><span class="ic red"><i class="fa-solid fa-cart-arrow-down"></i></span><div>Giỏ hàng bị bỏ quên<div class="card-sub">Khách thêm vào giỏ nhưng không đặt hàng</div></div></div></div>
+                <div class="stat-row" id="cartStats"></div>
+            </div>
+            <div class="grid g-2">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-basket-shopping"></i></span><div>Sản phẩm hay bị bỏ trong giỏ</div></div></div>
+                    <div class="rank-list" id="abandonList"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic violet"><i class="fa-solid fa-magnifying-glass"></i></span><div>Từ khóa tìm kiếm<div class="card-sub">Khách đang tìm gì trên website</div></div></div></div>
+                    <div class="table-wrap" id="searchTable" style="max-height:360px;overflow-y:auto"></div>
+                </div>
+            </div>
+            <div class="grid g-3">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic red"><i class="fa-solid fa-circle-exclamation"></i></span><div>Tìm nhưng không có kết quả<div class="card-sub">Gợi ý khóa học nên bổ sung</div></div></div></div>
+                    <div class="rank-list" id="zeroSearch"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic cyan"><i class="fa-solid fa-calendar-day"></i></span><div>Theo ngày trong tuần</div></div></div>
+                    <div class="chart-box sm"><canvas id="chartWeekday"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-arrows-down-to-line"></i></span><div>Độ sâu cuộn trang<div class="card-sub">Khách đọc đến đâu</div></div></div></div>
+                    <div class="chart-box sm"><canvas id="chartScroll"></canvas></div>
+                </div>
+            </div>
+            <div class="grid g-3">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic blue"><i class="fa-solid fa-headset"></i></span><div>Lượt bấm liên hệ<div class="card-sub">Zalo, điện thoại, Facebook...</div></div></div></div>
+                    <div class="chart-box sm"><canvas id="chartContact"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-gauge"></i></span><div>Tốc độ tải trang<div class="card-sub">Trung bình theo trang (càng thấp càng tốt)</div></div></div></div>
+                    <div class="table-wrap" id="perfTable"></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic red"><i class="fa-solid fa-bug"></i></span><div>Lỗi JavaScript<div class="card-sub">Lỗi khách gặp phải trên trình duyệt</div></div></div></div>
+                    <div class="table-wrap" id="errorTable"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VIEW: ORDERS ============ -->
+        <section class="view" id="view-orders">
+            <div class="grid g-4" id="orderStats"></div>
+            <div class="grid g-2-1">
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-sack-dollar"></i></span><div>Doanh thu theo ngày<div class="card-sub">Đơn đặt & đơn đã thanh toán</div></div></div></div>
+                    <div class="chart-box lg"><canvas id="chartRevenue"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic violet"><i class="fa-solid fa-layer-group"></i></span><div>Số khóa / đơn<div class="card-sub">Khách mua combo nhiều không?</div></div></div></div>
+                    <div class="chart-box lg"><canvas id="chartBasket"></canvas></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title"><span class="ic"><i class="fa-solid fa-receipt"></i></span><div>Đơn hàng gần đây<div class="card-sub">Ghi nhận từ trang hoàn tất đơn</div></div></div>
+                </div>
+                <div class="table-wrap" id="orderTable" style="max-height:560px;overflow-y:auto"></div>
+            </div>
+        </section>
+
+        <!-- ============ VIEW: REALTIME ============ -->
+        <section class="view" id="view-realtime">
+            <div class="grid g-1-2">
+                <div class="card">
+                    <div class="rt-hero">
+                        <div class="rt-pulse"><span></span></div>
+                        <div>
+                            <div class="quick-label">Đang truy cập (5 phút qua)</div>
+                            <div class="rt-num" id="rtActive">0</div>
+                            <div class="quick-meta" id="rtMeta">Tự động cập nhật mỗi 30 giây</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:22px">
+                        <div class="card-title" style="margin-bottom:10px;font-size:13px">Trang đang được xem</div>
+                        <div class="rank-list" id="rtPages"></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-head"><div class="card-title"><span class="ic green"><i class="fa-solid fa-wave-square"></i></span><div>Lượt xem trang mỗi phút<div class="card-sub">30 phút gần nhất</div></div></div></div>
+                    <div class="chart-box"><canvas id="chartRealtime"></canvas></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-head"><div class="card-title"><span class="ic"><i class="fa-solid fa-bolt"></i></span><div>Hoạt động trực tiếp<div class="card-sub">Từng hành động của khách trên website</div></div></div></div>
+                <div class="feed" id="rtFeed"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= SETTINGS MODAL ================= -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h3><i class="fa-solid fa-plug" style="color:var(--accent)"></i> Kết nối backend</h3>
+                <button class="btn btn-icon btn-sm" id="btnCloseSettings" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="field">
+                <label for="cfgApi">Link Web App Analytics (Apps Script)</label>
+                <input class="input" id="cfgApi" placeholder="https://script.google.com/macros/s/.../exec">
+                <small>Lấy sau khi Deploy file <b>backend/analytics.gs</b> — xem HUONG_DAN_ANALYTICS.md</small>
+            </div>
+            <div class="field">
+                <label for="cfgKey">ADMIN_KEY</label>
+                <input class="input" id="cfgKey" type="password" placeholder="Key hiển thị khi chạy hàm setup()">
+                <small>Chỉ lưu trên trình duyệt này. Không chia sẻ key cho người khác.</small>
+            </div>
+            <div class="conn-status" id="connStatus"></div>
+            <div class="switch-row">
+                <div><b>Không tính lượt truy cập của tôi</b><small>Loại trừ trình duyệt này khỏi thống kê (khi mở admin cùng tên miền với website)</small></div>
+                <label class="switch"><input type="checkbox" id="cfgNoTrack"><span></span></label>
+            </div>
+            <div class="switch-row">
+                <div><b>Làm mới danh sách khóa học</b><small>Danh sách khóa học (từ SheetDB) được lưu đệm 6 giờ để tiết kiệm lượt gọi API</small></div>
+                <button class="btn btn-sm" id="btnClearCatalog"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn" id="btnUseDemo"><i class="fa-solid fa-flask"></i> Dùng dữ liệu mẫu</button>
+                <button class="btn" id="btnTestConn"><i class="fa-solid fa-stethoscope"></i> Kiểm tra</button>
+                <button class="btn btn-primary" id="btnSaveCfg"><i class="fa-solid fa-check"></i> Lưu & kết nối</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-wrap" id="toastWrap"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="admin.js?v=1"></script>
+</body>
+</html>
