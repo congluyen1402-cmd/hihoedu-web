@@ -48,70 +48,88 @@ Hệ thống được thiết kế chuyên biệt theo tiêu chuẩn các sàn t
 
 ---
 
-## 🚀 HƯỚNG DẪN 5 BƯỚC CÀI ĐẶT BACKEND (GOOGLE APPS SCRIPT)
+## 🚀 HƯỚNG DẪN TÍCH HỢP VÀO GOOGLE SHEET HIỆN CÓ CỦA BẠN
 
-Backend sử dụng **Google Apps Script** kết hợp với **Google Sheets**. Giải pháp này:
-- Hoàn toàn miễn phí, không cần thuê máy chủ VPS.
-- Lưu trữ an toàn, dễ xuất file Excel và sao lưu.
-- Tách biệt độc lập với script đặt hàng hiện tại, không làm ảnh hưởng đến quy trình thanh toán.
+> [!IMPORTANT]
+> **CAM KẾT AN TOÀN TUYỆT ĐỐI CHO DỮ LIỆU CŨ:**
+> - Bảng tính hiện tại của bạn: [Google Sheet Quản lý](https://docs.google.com/spreadsheets/d/1mCLapOn3tv0_VzdOSSfcNK-XvKUtkrbe3lKRdcfln4c/edit)
+> - **KHÔNG sửa, KHÔNG xóa, KHÔNG ghi đè** bất kỳ sheet hay dữ liệu cũ nào của bạn.
+> - Hệ thống chỉ tạo thêm **1 tab mới duy nhất tên là `Analytics_Events`** để lưu nhật ký truy cập.
+> - Toàn bộ chức năng đặt đơn hàng (`new_order`) và kiểm tra mã chuyển khoản (`check_status`) giữ nguyên hoạt động bình thường.
 
-### Bước 1: Tạo Google Sheet mới
-1. Mở [Google Sheets](https://sheets.new) và tạo 1 bảng tính mới.
-2. Đặt tên bảng tính là: `HihoEdu Analytics Data`.
+---
 
-### Bước 2: Dán mã Backend vào Apps Script
-1. Trên thanh menu của Google Sheets, chọn **Tiện ích mở rộng (Extensions)** ➔ **Apps Script**.
-2. Xóa hết code mặc định trong file `Mã.gs`.
-3. Mở file [backend/analytics.gs](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/backend/analytics.gs) trong thư mục dự án, copy toàn bộ nội dung và dán vào Apps Script.
-4. Bấm **Ctrl + S** (hoặc biểu tượng Đĩa mềm) để Lưu lại.
+### Bước 1: Mở Apps Script trong Google Sheet của bạn
+1. Truy cập vào Google Sheet của bạn:
+   👉 **https://docs.google.com/spreadsheets/d/1mCLapOn3tv0_VzdOSSfcNK-XvKUtkrbe3lKRdcfln4c/edit**
+2. Trên thanh menu, chọn **Tiện ích mở rộng (Extensions)** ➔ **Apps Script**.
 
-### Bước 3: Khởi tạo dữ liệu & Lấy mã ADMIN_KEY
-1. Tại thanh công cụ phía trên màn hình Apps Script, chỗ chọn hàm cần chạy: chọn hàm **`setup`**.
-2. Bấm nút **Chạy (Run)** (biểu tượng hình tam giác).
-3. Google sẽ hiện hộp thoại yêu cầu cấp quyền:
-   - Chọn tài khoản Google của bạn.
-   - Bấm **Nâng cao (Advanced)** ➔ Chọn **Đi tới ... (không an toàn) / Go to ... (unsafe)**.
-   - Bấm **Cho phép (Allow)**.
-4. Sau khi hàm chạy xong, nhìn xuống khung **Nhật ký thực thi (Execution log)** ở phía dưới, bạn sẽ thấy 2 dòng:
-   ```text
-   ✅ Đã tạo sheet: Events
-   🔑 ADMIN_KEY của bạn: a1b2c3d4e5f6g7h8
-   ```
-   👉 **Hãy copy lưu lại chuỗi `ADMIN_KEY` này**. Đây là mật khẩu bí mật dùng để xem trang quản trị.
+---
 
-### Bước 4: Triển khai Ứng dụng web (Deploy Web App)
-1. Ở góc trên cùng bên phải màn hình Apps Script, bấm nút **Triển khai (Deploy)** ➔ Chọn **Tùy chọn triển khai mới (New deployment)**.
-2. Bấm vào biểu tượng bánh răng ⚙️ cạnh chữ *Chọn loại* ➔ Chọn **Ứng dụng web (Web app)**.
-3. Điền thông tin như sau:
-   - **Mô tả (Description)**: `HihoEdu Analytics Service`
-   - **Thực thi dưới dạng (Execute as)**: **Tôi (Me / email của bạn)**
-   - **Người có quyền truy cập (Who has access)**: **Bất kỳ ai (Anyone)** *(Bắt buộc chọn Anyone để website gửi được dữ liệu sự kiện lên)*
-4. Bấm **Triển khai (Deploy)**.
-5. Sao chép đường dẫn **URL ứng dụng web** (có đuôi `/exec`).
-   *Ví dụ:* `https://script.google.com/macros/s/AKfycbx.../exec`
+### Bước 2: Thêm file tập lệnh mới (Không sửa file code cũ)
+1. Ở cột bên trái, cạnh chữ **Tệp (Files)**, bấm vào dấu cộng **`+`** ➔ Chọn **Tập lệnh (Script)**.
+2. Đặt tên file mới là: **`Analytics`** (hệ thống sẽ tự tạo thành `Analytics.gs`).
+3. Mở file [backend/analytics.gs](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/backend/analytics.gs) trong thư mục dự án, copy toàn bộ nội dung và dán vào file `Analytics.gs` mới này.
+4. Bấm **Ctrl + S** để Lưu.
 
-### Bước 5: Cập nhật link vào Website & Đăng nhập Dashboard
+---
 
-#### A. Cập nhật vào mã theo dõi của website
-1. Mở file [js/tracker.js](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/js/tracker.js).
-2. Tại dòng 12, thay thế chữ `DAN_LINK_WEB_APP_ANALYTICS_VAO_DAY` bằng URL Web App bạn vừa copy ở Bước 4:
+### Bước 3: Kết nối nhẹ vào hàm `doPost` và `doGet` trong file code cũ của bạn
+Mở file code cũ của bạn (thường là `Mã.gs` hoặc `Code.gs` đang chứa code xử lý `new_order` và `check_status`):
+
+1. **Trong hàm `doPost(e)` cũ**: Chèn 5 dòng này vào **ngay dòng đầu tiên** bên trong hàm:
    ```javascript
-   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbx.../exec';
+   if (e && e.postData && e.postData.contents) {
+     var analyticsBody = JSON.parse(e.postData.contents);
+     if (analyticsBody.action === 'analytics_track' || analyticsBody.ctx) {
+       return handleAnalyticsDoPost_(analyticsBody);
+     }
+   }
+   // ... Toàn bộ code xử lý đơn hàng new_order cũ của bạn bên dưới giữ nguyên 100% ...
    ```
-3. Lưu file lại. Giờ đây mọi khách hàng vào website sẽ tự động được gửi dữ liệu thống kê lên Google Sheet!
 
-#### B. Đăng nhập vào Giao diện Quản trị (Admin Dashboard)
-1. Mở trình duyệt và truy cập vào trang quản trị:
-   - Nếu chạy trên máy tính: mở file [admin/index.html](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/admin/index.html) (hoặc qua link localhost `http://localhost:8080/admin/index.html`).
-   - Nếu tải lên hosting (nohiedu.com): truy cập `https://nohiedu.com/admin/`.
-2. Mặc định trang sẽ hiển thị ở **Chế độ dữ liệu mẫu (Demo)** để bạn xem trước toàn bộ biểu đồ.
-3. Để chuyển sang **Dữ liệu thật**:
-   - Bấm vào nút **Cài đặt kết nối** (ở góc dưới bên trái thanh menu) hoặc bấm nút **Kết nối ngay** trên thanh thông báo.
-   - Dán **URL Web App** vào ô *Link Web App Analytics*.
-   - Dán **ADMIN_KEY** (đã lấy ở Bước 3) vào ô *ADMIN_KEY*.
-   - Bấm **Kiểm tra** để hệ thống test kết nối.
+2. **Trong hàm `doGet(e)` cũ**: Chèn 4 dòng này vào **ngay dòng đầu tiên** bên trong hàm:
+   ```javascript
+   if (e && e.parameter && (e.parameter.action === 'events' || e.parameter.action === 'stats' || e.parameter.action === 'ping')) {
+     return handleAnalyticsDoGet_(e);
+   }
+   // ... Toàn bộ code xử lý check_status cũ của bạn bên dưới giữ nguyên 100% ...
+   ```
+3. Bấm **Ctrl + S** để Lưu lại.
+
+---
+
+### Bước 4: Khởi tạo tab `Analytics_Events` & Lấy `ADMIN_KEY`
+1. Tại thanh công cụ phía trên màn hình Apps Script, chọn hàm: **`setupAnalytics`**.
+2. Bấm nút **Chạy (Run)** (biểu tượng hình tam giác).
+3. Google sẽ yêu cầu cấp quyền (chỉ cần bấm *Nâng cao* ➔ *Đi tới...* ➔ *Cho phép*).
+4. Quan sát khung **Nhật ký thực thi (Execution log)** ở dưới, bạn sẽ thấy:
+   ```text
+   ✅ Đã tạo thành công tab riêng: Analytics_Events (Các tab cũ được giữ nguyên 100%)
+   🔑 ADMIN_KEY CỦA BẠN: a1b2c3d4e5f6g7h8
+   ```
+   👉 **Copy lưu lại mã `ADMIN_KEY` này**.
+   *(Đồng thời bạn có thể mở lại Google Sheet kiểm tra: đã xuất hiện thêm tab `Analytics_Events` với tiêu đề đẹp mắt, các tab dữ liệu cũ của bạn hoàn toàn nguyên vẹn!)*
+
+---
+
+### Bước 5: Cập nhật triển khai Web App (Deploy)
+1. Ở góc trên bên phải màn hình Apps Script, bấm nút **Triển khai (Deploy)** ➔ **Quản lý tùy chọn triển khai (Manage deployments)**.
+2. Bấm vào biểu tượng **Chỉnh sửa ✏️** (cạnh bản triển khai Web app đang hoạt động).
+3. Ở mục **Phiên bản (Version)**, chọn **Phiên bản mới (New version)**.
+4. Bấm **Triển khai (Deploy)**.
+5. Sao chép lại **URL ứng dụng web** (đuôi `/exec`).
+   *(Lưu ý: URL Web App này sẽ vừa phục vụ đặt hàng thanh toán cũ, vừa phục vụ theo dõi dữ liệu mới!)*
+
+---
+
+### Bước 6: Cấu hình vào Website & Đăng nhập Dashboard
+1. Mở file [js/tracker.js](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/js/tracker.js), dán URL Web App vào dòng 12 (`var ENDPOINT = '...'`).
+2. Mở Dashboard quản trị **https://hihoedu.com/admin/** (hoặc local [admin/index.html](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/admin/index.html)):
+   - Bấm **Cài đặt kết nối**.
+   - Dán URL Web App và mã **`ADMIN_KEY`** vào.
    - Bấm **Lưu & kết nối**.
-4. Chúc mừng bạn! Giao diện sẽ lập tức tải toàn bộ dữ liệu thực tế từ website của bạn! 🎉
+
 
 ---
 

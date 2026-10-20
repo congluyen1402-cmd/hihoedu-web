@@ -109,7 +109,7 @@
             if (!enabled) { queue.length = 0; return; }
             if (!queue.length) return;
             var batch = queue.splice(0, 50);
-            var payload = JSON.stringify({ ctx: ctx(), events: batch });
+            var payload = JSON.stringify({ action: 'analytics_track', ctx: ctx(), events: batch });
             var sent = false;
             if (useBeacon && navigator.sendBeacon) {
                 try { sent = navigator.sendBeacon(ENDPOINT, new Blob([payload], { type: 'text/plain;charset=utf-8' })); } catch (e) { }
