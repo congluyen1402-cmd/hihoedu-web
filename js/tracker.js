@@ -11,8 +11,8 @@
     'use strict';
 
     // ================== CẤU HÌNH ==================
-    // Dán link Web App (Apps Script analytics.gs) vào đây:
-    var ENDPOINT = 'DAN_LINK_WEB_APP_ANALYTICS_VAO_DAY';
+    // Link Web App (Apps Script analytics.gs):
+    var ENDPOINT = 'https://script.google.com/macros/s/AKfycbywNm8RWGA92SFBgSThbTwjed7L4xg9Wg4N8qXcOzsLHGij1FPWmVSCLUIQwaABe-Yyeg/exec';
     var SESSION_TIMEOUT = 30 * 60 * 1000; // 30 phút không hoạt động = phiên mới
     var FLUSH_INTERVAL = 4000;
     // ==============================================

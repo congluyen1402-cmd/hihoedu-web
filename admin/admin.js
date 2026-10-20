@@ -72,7 +72,19 @@
     const sourceName = (s) => SOURCE_NAMES[s] || s;
     const toDateInput = (ts) => { const d = new Date(ts); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
-    const loadCfg = () => { try { return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch (e) { return {}; } };
+    const DEFAULT_CONFIG = {
+        api: 'https://script.google.com/macros/s/AKfycbywNm8RWGA92SFBgSThbTwjed7L4xg9Wg4N8qXcOzsLHGij1FPWmVSCLUIQwaABe-Yyeg/exec',
+        key: '4128448c077b4540'
+    };
+    const loadCfg = () => {
+        try {
+            const saved = JSON.parse(localStorage.getItem(CFG_KEY));
+            if (saved && (saved.api || saved.key)) return saved;
+            return Object.assign({}, DEFAULT_CONFIG);
+        } catch (e) {
+            return Object.assign({}, DEFAULT_CONFIG);
+        }
+    };
     const saveCfg = (c) => localStorage.setItem(CFG_KEY, JSON.stringify(c));
 
     // =========================================================
