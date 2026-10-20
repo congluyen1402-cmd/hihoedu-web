@@ -1,15 +1,16 @@
 /**
  * HihoEdu Zalo Widget & QR Modal
- * Tự động tạo:
- * 1. Nút Zalo nổi (Floating Button) kèm hiệu ứng radar sóng âm góc dưới phải màn hình
- * 2. Thẻ xem trước mã QR (Hover Card trên Desktop)
- * 3. Hộp thoại phóng to mã QR (Modal Lightbox) trên mọi thiết bị
- * 4. Tương thích 100% Mobile & Desktop, không đè lên thanh menu dưới
+ * - Nút Zalo nổi góc dưới phải màn hình với hiệu ứng radar sóng âm
+ * - Hiển thị mã QR chuẩn vuông sắc nét (đã cắt riêng phần QR chuyên nghiệp)
+ * - Nút bấm chuyển trực tiếp vào giao diện nhắn tin Zalo
  */
 (function () {
     'use strict';
 
-    var ZALO_URL = 'https://zaloapp.com/qr/p/9ww6r6joc965';
+    // CẤU HÌNH LIÊN KẾT ZALO:
+    // Link mở thẳng vào khung chat Zalo của chủ shop (thay số điện thoại nếu cần):
+    var ZALO_PHONE = window.HIHO_ZALO_PHONE || ''; 
+    var ZALO_CHAT_URL = ZALO_PHONE ? ('https://zalo.me/' + ZALO_PHONE) : 'https://zaloapp.com/qr/p/9ww6r6joc965';
     var QR_IMG = 'images/zalo-qr.png';
 
     // 1. Chèn CSS styles
@@ -23,7 +24,7 @@
         }
         @media (max-width: 768px) {
             .zalo-float-wrap {
-                bottom: 82px; /* Tránh đè lên thanh sticky bottom bar trên điện thoại */
+                bottom: 82px; /* Tránh đè lên thanh bottom bar trên mobile */
                 right: 18px;
             }
         }
@@ -64,7 +65,7 @@
             color: #ffffff;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid rgba(255, 255, 255, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.9);
             text-decoration: none;
         }
         .zalo-btn-main:hover {
@@ -117,9 +118,9 @@
             position: absolute;
             bottom: 74px;
             right: 0;
-            width: 290px;
+            width: 280px;
             background: #ffffff;
-            border-radius: 20px;
+            border-radius: 22px;
             box-shadow: 0 20px 45px rgba(11, 19, 43, 0.25), 0 2px 10px rgba(0, 104, 255, 0.15);
             border: 1px solid rgba(0, 104, 255, 0.15);
             padding: 16px;
@@ -137,7 +138,6 @@
             transform: translateY(0) scale(1);
         }
         @media (max-width: 768px) {
-            /* Trên Mobile ẩn hover card, bấm vào nút sẽ mở thẳng Lightbox Modal */
             .zalo-hover-card { display: none !important; }
             .zalo-tooltip { display: none !important; }
         }
@@ -146,7 +146,7 @@
         .zalo-modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(11, 19, 43, 0.75);
+            background: rgba(11, 19, 43, 0.78);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             z-index: 10000;
@@ -165,7 +165,7 @@
         .zalo-modal-content {
             background: #ffffff;
             border-radius: 24px;
-            max-width: 380px;
+            max-width: 360px;
             width: 100%;
             overflow: hidden;
             box-shadow: 0 25px 60px rgba(0,0,0,0.35);
@@ -220,7 +220,7 @@
             <div class="zalo-pulse-ring"></div>
             <div class="zalo-pulse-ring-2"></div>
             
-            <a href="${ZALO_URL}" target="_blank" rel="noopener noreferrer" class="zalo-btn-main" id="btnMainZalo" title="Chat Zalo & Quét mã QR" aria-label="Chat Zalo với HihoEdu">
+            <a href="${ZALO_CHAT_URL}" target="_blank" rel="noopener noreferrer" class="zalo-btn-main" id="btnMainZalo" title="Chat Zalo & Quét mã QR" aria-label="Chat Zalo với HihoEdu">
                 ${ZALO_SVG}
             </a>
 
@@ -231,26 +231,27 @@
 
             <div class="zalo-hover-card">
                 <div style="background: linear-gradient(135deg, #0088ff 0%, #0068ff 100%); color: #fff; padding: 10px 14px; border-radius: 14px; margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
-                    <div style="font-weight: 800; font-size: 14px; display:flex; align-items:center; gap:6px;">
+                    <div style="font-weight: 800; font-size: 13.5px; display:flex; align-items:center; gap:6px;">
                         <i class="fa-solid fa-comment-dots"></i> Tư vấn Zalo HihoEdu
                     </div>
-                    <span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 20px; font-weight: 600;">24/7</span>
+                    <span style="font-size: 10px; background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 20px; font-weight: 600;">Trực tuyến</span>
                 </div>
                 
-                <div style="background: #f8fafc; padding: 8px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 10px; cursor: pointer;" onclick="window.openZaloModal();">
-                    <img src="${QR_IMG}" alt="Danh thiếp Zalo HihoEdu" style="width: 100%; height: auto; border-radius: 10px; display: block; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <!-- Ảnh mã QR vuông sạch chuyên nghiệp -->
+                <div style="background: #ffffff; padding: 10px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); cursor: pointer;" onclick="window.openZaloModal();" title="Bấm để phóng to">
+                    <img src="${QR_IMG}" alt="Mã QR Zalo HihoEdu" style="width: 175px; height: 175px; margin: 0 auto; display: block; border-radius: 6px;">
                 </div>
 
                 <p style="font-size: 11.5px; color: #64748b; margin: 0 0 10px; line-height: 1.4;">
-                    Quét mã bằng camera hoặc ứng dụng Zalo để được tư vấn lộ trình học miễn phí.
+                    Quét mã bằng Zalo để kết nối ngay, hoặc bấm nút dưới để mở chat trực tiếp.
                 </p>
 
                 <div style="display:flex; gap:6px;">
                     <button type="button" onclick="window.openZaloModal();" style="flex:1; padding: 8px 10px; background: #f1f5f9; hover:background:#e2e8f0; color: #334155; font-size: 12px; font-weight: 700; border-radius: 10px; border: none; cursor: pointer; transition: background 0.2s;">
                         <i class="fa-solid fa-expand"></i> Phóng to
                     </button>
-                    <a href="${ZALO_URL}" target="_blank" rel="noopener noreferrer" style="flex:1.5; padding: 8px 12px; background: #0068FF; color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,104,255,0.35);">
-                        Chat Zalo <i class="fa-solid fa-arrow-right" style="font-size: 10px;"></i>
+                    <a href="${ZALO_CHAT_URL}" target="_blank" rel="noopener noreferrer" style="flex:1.6; padding: 8px 12px; background: #0068FF; color: #fff; font-size: 12px; font-weight: 700; border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,104,255,0.35);">
+                        <i class="fa-solid fa-comment-dots"></i> Nhắn tin Zalo
                     </a>
                 </div>
             </div>
@@ -271,17 +272,18 @@
                         <i class="fa-solid fa-shield-halved"></i> Kênh Zalo Chính Thức HihoEdu
                     </div>
                     
-                    <div style="background: #ffffff; border-radius: 16px; padding: 4px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 16px;">
-                        <img src="${QR_IMG}" alt="Mã QR Zalo HihoEdu" style="width: 100%; height: auto; border-radius: 14px; display: block;">
+                    <!-- Khung ảnh QR chuẩn vuông đẹp mắt -->
+                    <div style="background: #ffffff; border-radius: 20px; padding: 14px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin: 0 auto 16px; width: 230px; height: 230px; display:flex; align-items:center; justify-content:center;">
+                        <img src="${QR_IMG}" alt="Mã QR Zalo HihoEdu" style="width: 200px; height: 200px; display: block; border-radius: 6px;">
                     </div>
 
-                    <h3 style="font-size: 17px; font-weight: 800; color: #0B132B; margin: 0 0 6px;">Quét Mã Để Thêm Bạn Zalo</h3>
+                    <h3 style="font-size: 17px; font-weight: 800; color: #0B132B; margin: 0 0 6px;">Quét Mã Để Nhắn Tin Zalo</h3>
                     <p style="font-size: 12.5px; color: #64748b; margin: 0 0 18px; line-height: 1.5;">
-                        Mở camera hoặc Zalo quét mã phía trên, hoặc nhấn nút bên dưới để mở cuộc trò chuyện trực tiếp.
+                        Mở camera hoặc ứng dụng Zalo quét mã phía trên, hoặc nhấn nút dưới để vào thẳng giao diện nhắn tin Zalo.
                     </p>
 
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <a href="${ZALO_URL}" target="_blank" rel="noopener noreferrer" style="width:100%; padding: 13px; background: linear-gradient(135deg, #0088ff 0%, #0068ff 100%); color:#fff; font-size: 14px; font-weight: 800; border-radius: 14px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow: 0 6px 18px rgba(0, 104, 255, 0.4);">
+                        <a href="${ZALO_CHAT_URL}" target="_blank" rel="noopener noreferrer" style="width:100%; padding: 13px; background: linear-gradient(135deg, #0088ff 0%, #0068ff 100%); color:#fff; font-size: 14px; font-weight: 800; border-radius: 14px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow: 0 6px 18px rgba(0, 104, 255, 0.4);">
                             <i class="fa-solid fa-comment-dots text-base"></i> Nhắn Tin Qua Zalo Ngay
                         </a>
                         <button type="button" onclick="window.closeZaloModal();" style="width:100%; padding: 10px; background: transparent; color:#64748b; font-size: 13px; font-weight: 600; border:none; cursor:pointer;">
@@ -305,10 +307,9 @@
         var btnMain = document.getElementById('btnMainZalo');
         if (btnMain) {
             btnMain.addEventListener('click', function (e) {
-                // Trên Mobile mở Modal QR để người dùng có thể quét hoặc bấm chat
+                // Trên Mobile: mở trực tiếp ứng dụng Zalo chat
                 if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                    window.openZaloModal();
+                    window.location.href = ZALO_CHAT_URL;
                 }
             });
         }
