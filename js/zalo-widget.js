@@ -8,9 +8,9 @@
     'use strict';
 
     // CẤU HÌNH LIÊN KẾT ZALO:
-    // Link mở thẳng vào khung chat Zalo của chủ shop (thay số điện thoại nếu cần):
-    var ZALO_PHONE = window.HIHO_ZALO_PHONE || ''; 
-    var ZALO_CHAT_URL = ZALO_PHONE ? ('https://zalo.me/' + ZALO_PHONE) : 'https://zaloapp.com/qr/p/9ww6r6joc965';
+    // Link mở thẳng vào khung chat Zalo của chủ shop:
+    var ZALO_PHONE = '0925760173'; 
+    var ZALO_CHAT_URL = 'https://zalo.me/' + ZALO_PHONE;
     var QR_IMG = 'images/zalo-qr.png';
 
     // 1. Chèn CSS styles
