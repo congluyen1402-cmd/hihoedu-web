@@ -444,6 +444,32 @@
             </div>
 
         </div>
+    
+            <!-- Khối Hỗ Trợ Kích Hoạt Qua Zalo -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-center gap-6">
+                <div class="shrink-0 cursor-pointer transform hover:scale-105 transition" onclick="window.openZaloModal();">
+                    <img src="images/zalo-qr.png" alt="Mã QR Zalo Kích Hoạt" class="w-36 h-auto rounded-2xl bg-white p-2 shadow-md">
+                </div>
+                <div class="flex-1 text-center md:text-left space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-bold uppercase">
+                        <i class="fa-solid fa-bolt"></i> Kích hoạt siêu tốc
+                    </div>
+                    <h3 class="text-xl font-bold text-[#0B132B]">Gửi Ảnh Chuyển Khoản Qua Zalo Để Nhận Khóa Học Ngay!</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        Sau khi chuyển khoản, bạn có thể quét mã QR Zalo trên hoặc nhấn nút để nhắn tin trực tiếp cho ban quản trị. Chúng tôi sẽ kiểm tra và cấp quyền Drive khóa học cho bạn trong vòng 3 phút!
+                    </p>
+                    <div class="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
+                        <a href="https://zaloapp.com/qr/p/9ww6r6joc965" target="_blank" data-zalo-qr="true" class="px-6 py-2.5 bg-[#0068FF] hover:bg-[#0052cc] text-white font-bold text-sm rounded-xl shadow-md flex items-center gap-2 transition">
+                            <i class="fa-solid fa-comment-dots"></i> Nhắn Tin Zalo Ngay
+                        </a>
+                        <button type="button" onclick="window.openZaloModal();" class="px-4 py-2.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-bold text-sm rounded-xl transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-expand"></i> Phóng to mã QR
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <script src="js/cart.js"></script>
@@ -595,5 +621,6 @@
     </script>
 <script src="js/main.js"></script>
 <script src="js/tracker.js?v=1" defer></script>
+    <script src="js/zalo-widget.js"></script>
 </body>
 </html>
