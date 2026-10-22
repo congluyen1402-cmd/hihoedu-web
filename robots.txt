@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /backend/
+
+Sitemap: https://hihoedu.com/sitemap.xml
