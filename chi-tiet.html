@@ -3,19 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết khóa học - HihoEdu Nền tảng học tập toàn diện</title>
-    <meta name="description" content="Xem chi tiết nội dung khóa học, lộ trình học thực chiến, tài liệu và video bài giảng chất lượng cao trên HihoEdu.">
-    <meta name="keywords" content="khóa học HihoEdu, chi tiết bài giảng, lộ trình học, kỹ năng số">
+    <title>Chi Tiết Khóa Học - HihoEdu | Mua Khóa Học Chất Lượng, Giá Rẻ, Học Trọn Đời</title>
+    <meta name="description" content="Xem chi tiết nội dung, lộ trình học, giá khóa học tại HihoEdu. 900+ khóa học thực chiến: AI, Marketing, Lập trình, Thiết kế. Học trọn đời. Hoàn tiền 100% trong 7 ngày!">
+    <meta name="keywords" content="mua khóa học, chi tiết khóa học HihoEdu, khóa học online giá rẻ, lộ trình học, khóa học thực chiến, kỹ năng số">
     <meta name="author" content="HihoEdu">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
     <link rel="canonical" href="https://hihoedu.com/chi-tiet.html">
 
     <!-- Open Graph / Facebook / Zalo -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://hihoedu.com/chi-tiet.html">
     <meta property="og:title" content="Chi tiết khóa học - HihoEdu Nền tảng học tập toàn diện">
-    <meta property="og:description" content="Đầy đủ bài giảng, tài liệu thực hành và hỗ trợ giải đáp trực tiếp từ chuyên gia.">
+    <meta property="og:description" content="Xem chi tiết nội dung, giá, lộ trình học và cam kết chất lượng. Mua khóa học online tại HihoEdu - hoàn tiền 100% trong 7 ngày!">
     <meta property="og:image" content="https://hihoedu.com/images/banner.jpg">
+    <!-- BreadcrumbList + Course Schema -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Trang chủ",
+            "item": "https://hihoedu.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Khóa học",
+            "item": "https://hihoedu.com/#courses"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Chi tiết khóa học",
+            "item": "https://hihoedu.com/chi-tiet.html"
+          }
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "Khóa Học Thực Chiến HihoEdu",
+        "description": "Khóa học thực chiến chất lượng cao với lộ trình rõ ràng, tài liệu phong phú và hỗ trợ trực tiếp từ chuyên gia HihoEdu.",
+        "provider": {
+          "@type": "Organization",
+          "name": "HihoEdu",
+          "url": "https://hihoedu.com/"
+        },
+        "url": "https://hihoedu.com/chi-tiet.html",
+        "image": "https://hihoedu.com/images/banner.jpg",
+        "inLanguage": "vi",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "VND",
+          "availability": "https://schema.org/InStock",
+          "category": "Paid"
+        },
+        "hasCourseInstance": {
+          "@type": "CourseInstance",
+          "courseMode": "online"
+        }
+      }
+    ]
+    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -602,30 +655,37 @@
     <!-- Logic Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Countdown Logic
+            // Countdown Logic - Rolling 72h (luon active, khong bao gio het han)
+            function getOrCreateDeadline() {
+                var KEY = 'hiho_sale_deadline';
+                var deadline = localStorage.getItem(KEY);
+                var now = Date.now();
+                if (!deadline || parseInt(deadline) < now) {
+                    deadline = now + (72 * 60 * 60 * 1000);
+                    localStorage.setItem(KEY, deadline);
+                }
+                return parseInt(deadline);
+            }
+
             function updateDetailTimer() {
-                const countDownDate = new Date("Sep 10, 2026 23:59:59").getTime();
-                const now = new Date().getTime();
-                const distance = countDownDate - now;
+                var countDownDate = getOrCreateDeadline();
+                var now = new Date().getTime();
+                var distance = countDownDate - now;
 
                 if (distance > 0) {
-                    const weeks = Math.floor(distance / (1000 * 60 * 60 * 24 * 7));
-                    const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    var weeks = Math.floor(distance / (1000 * 60 * 60 * 24 * 7));
+                    var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                    document.getElementById("cd-weeks").innerText = weeks < 10 ? "0" + weeks : weeks;
-                    document.getElementById("cd-days").innerText = days < 10 ? "0" + days : days;
-                    document.getElementById("cd-hours").innerText = hours < 10 ? "0" + hours : hours;
-                    document.getElementById("cd-minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-                    document.getElementById("cd-seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+                    document.getElementById('cd-weeks').innerText = weeks < 10 ? '0' + weeks : weeks;
+                    document.getElementById('cd-days').innerText = days < 10 ? '0' + days : days;
+                    document.getElementById('cd-hours').innerText = hours < 10 ? '0' + hours : hours;
+                    document.getElementById('cd-minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+                    document.getElementById('cd-seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
                 } else {
-                    document.getElementById("cd-weeks").innerText = "00";
-                    document.getElementById("cd-days").innerText = "00";
-                    document.getElementById("cd-hours").innerText = "00";
-                    document.getElementById("cd-minutes").innerText = "00";
-                    document.getElementById("cd-seconds").innerText = "00";
+                    localStorage.removeItem('hiho_sale_deadline');
                 }
             }
             updateDetailTimer();
