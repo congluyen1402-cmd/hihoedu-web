@@ -10,7 +10,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="admin.css?v=1">
+    <link rel="stylesheet" href="admin.css?v=2">
+    <style id="authAntiFouc">
+        /* Ngăn hiển thị nội dung quản trị khi chưa xác thực */
+        #adminApp { display: none !important; }
+    </style>
 </head>
 <body>
     <div class="bg-orbs"><span></span><span></span><span></span></div>
@@ -18,8 +22,77 @@
     <div class="loader" id="loader"></div>
     <div class="overlay" id="overlay"></div>
 
-    <!-- ================= SIDEBAR ================= -->
-    <aside class="sidebar" id="sidebar">
+    <!-- ================= AUTH GATE (MÀN HÌNH ĐĂNG NHẬP BẢO MẬT) ================= -->
+    <div class="auth-gate" id="authGate">
+        <div class="auth-card" id="authCard">
+            <div class="auth-glow-bar"></div>
+            <div class="auth-header">
+                <div class="auth-icon-wrap">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="auth-title">HihoEdu Admin</h2>
+                <p class="auth-subtitle">Cổng Quản Trị & Phân Tích Dữ Liệu</p>
+                <div class="auth-badge">
+                    <i class="fa-solid fa-lock"></i> Khu vực bảo mật giới hạn
+                </div>
+            </div>
+
+            <div class="auth-alert auth-alert-danger" id="authError">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span id="authErrorMsg">Tên đăng nhập hoặc mật khẩu không đúng!</span>
+            </div>
+
+            <form class="auth-form" id="authForm" autocomplete="on">
+                <div class="auth-field">
+                    <label class="auth-label" for="loginUser">Tên đăng nhập</label>
+                    <div class="auth-input-box">
+                        <i class="fa-solid fa-user auth-prefix-icon"></i>
+                        <input class="input" type="text" id="loginUser" placeholder="Nhập tên đăng nhập..." required autofocus autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="auth-field">
+                    <label class="auth-label" for="loginPass">Mật khẩu</label>
+                    <div class="auth-input-box">
+                        <i class="fa-solid fa-key auth-prefix-icon"></i>
+                        <input class="input" type="password" id="loginPass" placeholder="Nhập mật khẩu quản trị..." required autocomplete="current-password">
+                        <button type="button" class="auth-toggle-pwd" id="btnTogglePass" aria-label="Hiện mật khẩu">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-options">
+                    <label class="auth-remember">
+                        <input type="checkbox" id="loginRemember" checked>
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <button type="button" class="auth-hint-btn" id="btnAuthHint">Tài khoản mặc định?</button>
+                </div>
+
+                <button type="submit" class="auth-btn-submit" id="btnLoginSubmit">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    <span>Đăng Nhập Quản Trị</span>
+                </button>
+            </form>
+
+            <div class="auth-hint-box" id="authHintBox" style="display: none;">
+                <b><i class="fa-solid fa-circle-info"></i> Thông tin đăng nhập ban đầu:</b>
+                <p style="margin: 4px 0;">• Tên đăng nhập: <code>admin</code></p>
+                <p style="margin: 4px 0;">• Mật khẩu: <code>HihoEdu@2026</code></p>
+                <small style="color: var(--muted); display: block; margin-top: 4px;">Bạn có thể đổi tên đăng nhập và mật khẩu bất cứ lúc nào trong mục <b>Cài đặt</b> sau khi đăng nhập.</small>
+            </div>
+
+            <div class="auth-footer-note">
+                <i class="fa-solid fa-fingerprint"></i> Truy cập được mã hóa và bảo mật. Vui lòng không chia sẻ tài khoản.
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD APP (CHỈ HIỆN KHI ĐÃ ĐĂNG NHẬP) ================= -->
+    <div class="admin-app" id="adminApp">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar" id="sidebar">
         <div class="brand">
             <div class="brand-logo"><i class="fa-solid fa-chart-line"></i></div>
             <div>
@@ -43,6 +116,8 @@
                 <div><b id="modeTitle">Dữ liệu mẫu</b><small id="modeSub">Chưa kết nối backend</small></div>
             </div>
             <button class="btn" id="btnOpenSettings"><i class="fa-solid fa-gear"></i> Cài đặt kết nối</button>
+            <button class="btn" id="btnOpenAccount" style="margin-top:6px;"><i class="fa-solid fa-shield-halved"></i> Đổi mật khẩu</button>
+            <button class="btn btn-logout" id="btnLogout" style="margin-top:6px; color: var(--danger);"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
         </div>
     </aside>
 
@@ -74,6 +149,11 @@
                 </div>
                 <button class="btn btn-icon" id="btnRefresh" title="Làm mới dữ liệu"><i class="fa-solid fa-rotate"></i></button>
                 <button class="btn" id="btnExport" title="Xuất dữ liệu thô CSV"><i class="fa-solid fa-file-arrow-down"></i> <span>Xuất CSV</span></button>
+                <div class="user-pill" id="topbarUserPill">
+                    <i class="fa-solid fa-circle-user" style="color:var(--accent)"></i>
+                    <span id="topbarUserName">admin</span>
+                    <button class="btn-topbar-logout" id="btnTopbarLogout" title="Đăng xuất"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                </div>
             </div>
         </header>
 
@@ -340,37 +420,77 @@
             </div>
         </section>
     </main>
+    </div> <!-- /#adminApp -->
 
     <!-- ================= SETTINGS MODAL ================= -->
     <div class="modal" id="settingsModal">
         <div class="modal-box">
             <div class="modal-head">
-                <h3><i class="fa-solid fa-plug" style="color:var(--accent)"></i> Kết nối backend</h3>
+                <h3><i class="fa-solid fa-gear" style="color:var(--accent)"></i> Cài đặt hệ thống</h3>
                 <button class="btn btn-icon btn-sm" id="btnCloseSettings" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="field">
-                <label for="cfgApi">Link Web App Analytics (Apps Script)</label>
-                <input class="input" id="cfgApi" placeholder="https://script.google.com/macros/s/.../exec">
-                <small>Lấy sau khi Deploy file <b>backend/analytics.gs</b> — xem HUONG_DAN_ANALYTICS.md</small>
+
+            <!-- Tab Switch -->
+            <div class="modal-tabs">
+                <button class="modal-tab-btn active" id="tabBtnBackend"><i class="fa-solid fa-plug"></i> Kết nối backend</button>
+                <button class="modal-tab-btn" id="tabBtnSecurity"><i class="fa-solid fa-shield-halved"></i> Đổi mật khẩu</button>
             </div>
-            <div class="field">
-                <label for="cfgKey">ADMIN_KEY</label>
-                <input class="input" id="cfgKey" type="password" placeholder="Key hiển thị khi chạy hàm setup()">
-                <small>Chỉ lưu trên trình duyệt này. Không chia sẻ key cho người khác.</small>
+
+            <!-- Panel 1: Backend Settings -->
+            <div id="panelBackend">
+                <div class="field">
+                    <label for="cfgApi">Link Web App Analytics (Apps Script)</label>
+                    <input class="input" id="cfgApi" placeholder="https://script.google.com/macros/s/.../exec">
+                    <small>Lấy sau khi Deploy file <b>backend/analytics.gs</b> — xem HUONG_DAN_ANALYTICS.md</small>
+                </div>
+                <div class="field">
+                    <label for="cfgKey">ADMIN_KEY</label>
+                    <input class="input" id="cfgKey" type="password" placeholder="Key hiển thị khi chạy hàm setup()">
+                    <small>Chỉ lưu trên trình duyệt này. Không chia sẻ key cho người khác.</small>
+                </div>
+                <div class="conn-status" id="connStatus"></div>
+                <div class="switch-row">
+                    <div><b>Không tính lượt truy cập của tôi</b><small>Loại trừ trình duyệt này khỏi thống kê (khi mở admin cùng tên miền với website)</small></div>
+                    <label class="switch"><input type="checkbox" id="cfgNoTrack"><span></span></label>
+                </div>
+                <div class="switch-row">
+                    <div><b>Làm mới danh sách khóa học</b><small>Danh sách khóa học (từ SheetDB) được lưu đệm 6 giờ để tiết kiệm lượt gọi API</small></div>
+                    <button class="btn btn-sm" id="btnClearCatalog"><i class="fa-solid fa-rotate"></i> Làm mới</button>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn" id="btnUseDemo"><i class="fa-solid fa-flask"></i> Dùng dữ liệu mẫu</button>
+                    <button class="btn" id="btnTestConn"><i class="fa-solid fa-stethoscope"></i> Kiểm tra</button>
+                    <button class="btn btn-primary" id="btnSaveCfg"><i class="fa-solid fa-check"></i> Lưu & kết nối</button>
+                </div>
             </div>
-            <div class="conn-status" id="connStatus"></div>
-            <div class="switch-row">
-                <div><b>Không tính lượt truy cập của tôi</b><small>Loại trừ trình duyệt này khỏi thống kê (khi mở admin cùng tên miền với website)</small></div>
-                <label class="switch"><input type="checkbox" id="cfgNoTrack"><span></span></label>
-            </div>
-            <div class="switch-row">
-                <div><b>Làm mới danh sách khóa học</b><small>Danh sách khóa học (từ SheetDB) được lưu đệm 6 giờ để tiết kiệm lượt gọi API</small></div>
-                <button class="btn btn-sm" id="btnClearCatalog"><i class="fa-solid fa-rotate"></i> Làm mới</button>
-            </div>
-            <div class="modal-actions">
-                <button class="btn" id="btnUseDemo"><i class="fa-solid fa-flask"></i> Dùng dữ liệu mẫu</button>
-                <button class="btn" id="btnTestConn"><i class="fa-solid fa-stethoscope"></i> Kiểm tra</button>
-                <button class="btn btn-primary" id="btnSaveCfg"><i class="fa-solid fa-check"></i> Lưu & kết nối</button>
+
+            <!-- Panel 2: Account Security (Change Password) -->
+            <div id="panelSecurity" style="display: none;">
+                <div class="auth-alert auth-alert-danger" id="secError">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span id="secErrorMsg"></span>
+                </div>
+                <div class="field">
+                    <label for="secNewUser">Tên đăng nhập quản trị</label>
+                    <input class="input" id="secNewUser" placeholder="admin" value="admin">
+                    <small>Tên dùng để đăng nhập vào trang quản trị này.</small>
+                </div>
+                <div class="field">
+                    <label for="secOldPass">Mật khẩu hiện tại <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="secOldPass" type="password" placeholder="Nhập mật khẩu hiện tại...">
+                    <small>Cần nhập đúng mật khẩu hiện tại để xác nhận quyền thay đổi.</small>
+                </div>
+                <div class="field">
+                    <label for="secNewPass">Mật khẩu mới <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="secNewPass" type="password" placeholder="Tối thiểu 6 ký tự...">
+                </div>
+                <div class="field">
+                    <label for="secConfirmPass">Xác nhận mật khẩu mới <span style="color:var(--danger)">*</span></label>
+                    <input class="input" id="secConfirmPass" type="password" placeholder="Nhập lại mật khẩu mới...">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="btnSaveSecurity"><i class="fa-solid fa-shield-halved"></i> Cập nhật mật khẩu</button>
+                </div>
             </div>
         </div>
     </div>
@@ -378,6 +498,6 @@
     <div class="toast-wrap" id="toastWrap"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="admin.js?v=1"></script>
+    <script src="admin.js?v=2"></script>
 </body>
 </html>

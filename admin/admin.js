@@ -13,6 +13,183 @@
     const $$ = (s) => Array.from(document.querySelectorAll(s));
     const DAY = 86400000;
     const CFG_KEY = 'hiho_admin_cfg';
+    const AUTH_KEY = 'hiho_admin_auth';
+    const SESSION_KEY = 'hiho_admin_session';
+    const FAIL_KEY = 'hiho_admin_fails';
+
+    // Mặc định: user = admin | pass = HihoEdu@2026
+    const DEFAULT_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+    const DEFAULT_PASS_HASH = 'c5b27230fd412311de75102a3badbb7920621b87f32da4df9be4113b55ed2d75';
+
+    async function sha256(str) {
+        const enc = new TextEncoder();
+        const data = enc.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const authManager = {
+        getAuth() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(AUTH_KEY));
+                if (saved && saved.userHash && saved.passHash) return saved;
+            } catch (e) {}
+            return {
+                username: 'admin',
+                userHash: DEFAULT_USER_HASH,
+                passHash: DEFAULT_PASS_HASH
+            };
+        },
+
+        checkLock() {
+            try {
+                const failData = JSON.parse(localStorage.getItem(FAIL_KEY));
+                if (failData && failData.count >= 5 && failData.lockedUntil > Date.now()) {
+                    return {
+                        locked: true,
+                        remainingSeconds: Math.ceil((failData.lockedUntil - Date.now()) / 1000)
+                    };
+                }
+            } catch (e) {}
+            return { locked: false, remainingSeconds: 0 };
+        },
+
+        recordFail() {
+            try {
+                let failData = JSON.parse(localStorage.getItem(FAIL_KEY)) || { count: 0, lockedUntil: 0 };
+                failData.count = (failData.count || 0) + 1;
+                if (failData.count >= 5) {
+                    failData.lockedUntil = Date.now() + 60000; // Khóa 60 giây
+                }
+                localStorage.setItem(FAIL_KEY, JSON.stringify(failData));
+                return failData;
+            } catch (e) {
+                return { count: 1, lockedUntil: 0 };
+            }
+        },
+
+        clearFails() {
+            localStorage.removeItem(FAIL_KEY);
+        },
+
+        async checkSession() {
+            try {
+                const raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
+                if (!raw) return null;
+                const sess = JSON.parse(raw);
+                if (!sess || !sess.expiresAt || !sess.signature || !sess.token) return null;
+                if (Date.now() > sess.expiresAt) {
+                    this.logout(false);
+                    return null;
+                }
+                const auth = this.getAuth();
+                const expectedSig = await sha256(sess.token + auth.userHash + auth.passHash);
+                if (sess.signature !== expectedSig) {
+                    this.logout(false);
+                    return null;
+                }
+                return sess;
+            } catch (e) {
+                return null;
+            }
+        },
+
+        async login(user, pass, remember) {
+            const lock = this.checkLock();
+            if (lock.locked) {
+                throw new Error(`Đã nhập sai quá 5 lần. Vui lòng chờ ${lock.remainingSeconds}s để thử lại.`);
+            }
+
+            const auth = this.getAuth();
+            const uHash = await sha256(user.trim());
+            const pHash = await sha256(pass);
+
+            if (uHash !== auth.userHash || pHash !== auth.passHash) {
+                const f = this.recordFail();
+                const left = 5 - f.count;
+                if (left > 0) {
+                    throw new Error(`Tên đăng nhập hoặc mật khẩu không chính xác! (Còn ${left} lần thử)`);
+                } else {
+                    throw new Error('Đã nhập sai quá 5 lần. Hệ thống tạm khóa 60 giây.');
+                }
+            }
+
+            this.clearFails();
+
+            // Sinh session token an toàn
+            const tokenArr = new Uint8Array(16);
+            crypto.getRandomValues(tokenArr);
+            const token = Array.from(tokenArr).map(b => b.toString(16).padStart(2, '0')).join('');
+            const duration = remember ? (7 * 24 * 3600 * 1000) : (12 * 3600 * 1000);
+            const expiresAt = Date.now() + duration;
+            const signature = await sha256(token + auth.userHash + auth.passHash);
+
+            const session = {
+                token,
+                username: user.trim(),
+                expiresAt,
+                signature,
+                remember: !!remember
+            };
+
+            if (remember) {
+                localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                sessionStorage.removeItem(SESSION_KEY);
+            } else {
+                sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+                localStorage.removeItem(SESSION_KEY);
+            }
+
+            return session;
+        },
+
+        logout(reload = true) {
+            sessionStorage.removeItem(SESSION_KEY);
+            localStorage.removeItem(SESSION_KEY);
+            if (reload) location.reload();
+        },
+
+        async changeCredentials(oldPass, newUser, newPass) {
+            const auth = this.getAuth();
+            const oldHash = await sha256(oldPass);
+            if (oldHash !== auth.passHash) {
+                throw new Error('Mật khẩu hiện tại không chính xác!');
+            }
+            if (!newPass || newPass.length < 6) {
+                throw new Error('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            }
+            const cleanUser = (newUser || auth.username || 'admin').trim();
+            if (!cleanUser) {
+                throw new Error('Tên đăng nhập không được để trống!');
+            }
+            const newUserHash = await sha256(cleanUser);
+            const newPassHash = await sha256(newPass);
+
+            const newAuth = {
+                username: cleanUser,
+                userHash: newUserHash,
+                passHash: newPassHash,
+                updatedAt: Date.now()
+            };
+            localStorage.setItem(AUTH_KEY, JSON.stringify(newAuth));
+
+            // Cập nhật lại chữ ký của session đang đăng nhập để không bị văng ra
+            const raw = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
+            if (raw) {
+                try {
+                    const sess = JSON.parse(raw);
+                    sess.username = cleanUser;
+                    sess.signature = await sha256(sess.token + newUserHash + newPassHash);
+                    if (sess.remember) {
+                        localStorage.setItem(SESSION_KEY, JSON.stringify(sess));
+                    } else {
+                        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sess));
+                    }
+                } catch (e) {}
+            }
+            return newAuth;
+        }
+    };
     const CATALOG_KEY = 'hiho_admin_catalog_v1';
     const CATALOG_API = atob('aHR0cHM6Ly9zaGVldGRiLmlvL2FwaS92MS9mY2RybjM1d3IyeWxh');
     const PALETTE = ['#f59e0b', '#8b5cf6', '#22d3ee', '#10b981', '#f43f5e', '#3b82f6', '#ec4899', '#84cc16', '#eab308', '#14b8a6', '#a855f7', '#64748b'];
@@ -1435,10 +1612,182 @@
     }
 
     // =========================================================
-    // KHỞI ĐỘNG
+    // UI BẢO MẬT & ĐĂNG NHẬP
     // =========================================================
-    async function init() {
+    function bindAuthUI() {
+        const form = $('#authForm');
+        const userIn = $('#loginUser');
+        const passIn = $('#loginPass');
+        const remIn = $('#loginRemember');
+        const btnTogglePass = $('#btnTogglePass');
+        const eyeIcon = $('#eyeIcon');
+        const btnAuthHint = $('#btnAuthHint');
+        const hintBox = $('#authHintBox');
+        const errAlert = $('#authError');
+        const errMsg = $('#authErrorMsg');
+        const authCard = $('#authCard');
+        const submitBtn = $('#btnLoginSubmit');
+
+        if (!form) return;
+
+        // Toggle Password visibility
+        btnTogglePass.addEventListener('click', () => {
+            const isPass = passIn.type === 'password';
+            passIn.type = isPass ? 'text' : 'password';
+            eyeIcon.className = isPass ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+        });
+
+        // Toggle Hint Box
+        btnAuthHint.addEventListener('click', () => {
+            hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Submit Login Form
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errAlert.classList.remove('show');
+            const user = userIn.value.trim();
+            const pass = passIn.value;
+            if (!user || !pass) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...';
+
+            try {
+                const session = await authManager.login(user, pass, remIn.checked);
+                toast('Đăng nhập thành công! Đang tải bảng điều khiển...', 'ok');
+                unlockDashboard(session);
+            } catch (err) {
+                errMsg.textContent = err.message || 'Đăng nhập thất bại!';
+                errAlert.classList.add('show');
+                authCard.classList.remove('auth-shake');
+                void authCard.offsetWidth; // force reflow
+                authCard.classList.add('auth-shake');
+                passIn.value = '';
+                passIn.focus();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng Nhập Quản Trị';
+            }
+        });
+    }
+
+    function unlockDashboard(session) {
+        // 1. Ẩn Auth Gate
+        const gate = $('#authGate');
+        if (gate) gate.style.display = 'none';
+
+        // 2. Xóa Anti-FOUC style & hiển thị Admin App
+        const antiFouc = document.getElementById('authAntiFouc');
+        if (antiFouc) antiFouc.remove();
+        const app = $('#adminApp');
+        if (app) app.style.display = '';
+
+        // 3. Cập nhật tên user trên topbar
+        if ($('#topbarUserName')) {
+            $('#topbarUserName').textContent = session.username || 'admin';
+        }
+
+        // 4. Khởi chạy toàn bộ Dashboard
+        bootDashboard();
+    }
+
+    function bindSecurityModalUI() {
+        const tabBackend = $('#tabBtnBackend');
+        const tabSecurity = $('#tabBtnSecurity');
+        const panelBackend = $('#panelBackend');
+        const panelSecurity = $('#panelSecurity');
+
+        if (!tabBackend || !tabSecurity) return;
+
+        const switchModalTab = (tab) => {
+            if (tab === 'security') {
+                tabSecurity.classList.add('active');
+                tabBackend.classList.remove('active');
+                panelSecurity.style.display = 'block';
+                panelBackend.style.display = 'none';
+                const currentAuth = authManager.getAuth();
+                $('#secNewUser').value = currentAuth.username || 'admin';
+                $('#secOldPass').value = '';
+                $('#secNewPass').value = '';
+                $('#secConfirmPass').value = '';
+                $('#secError').classList.remove('show');
+            } else {
+                tabBackend.classList.add('active');
+                tabSecurity.classList.remove('active');
+                panelBackend.style.display = 'block';
+                panelSecurity.style.display = 'none';
+            }
+        };
+
+        tabBackend.addEventListener('click', () => switchModalTab('backend'));
+        tabSecurity.addEventListener('click', () => switchModalTab('security'));
+
+        if ($('#btnOpenAccount')) {
+            $('#btnOpenAccount').addEventListener('click', () => {
+                openSettings();
+                switchModalTab('security');
+            });
+        }
+
+        // Đăng xuất
+        const doLogout = () => {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi trang quản trị?')) {
+                authManager.logout();
+            }
+        };
+        if ($('#btnLogout')) $('#btnLogout').addEventListener('click', doLogout);
+        if ($('#btnTopbarLogout')) $('#btnTopbarLogout').addEventListener('click', doLogout);
+
+        // Lưu mật khẩu mới
+        $('#btnSaveSecurity').addEventListener('click', async () => {
+            const secError = $('#secError');
+            const secErrorMsg = $('#secErrorMsg');
+            secError.classList.remove('show');
+
+            const newUser = $('#secNewUser').value.trim();
+            const oldPass = $('#secOldPass').value;
+            const newPass = $('#secNewPass').value;
+            const confirmPass = $('#secConfirmPass').value;
+
+            if (!oldPass) {
+                secErrorMsg.textContent = 'Vui lòng nhập mật khẩu hiện tại!';
+                secError.classList.add('show');
+                return;
+            }
+            if (!newPass || newPass.length < 6) {
+                secErrorMsg.textContent = 'Mật khẩu mới phải có tối thiểu 6 ký tự!';
+                secError.classList.add('show');
+                return;
+            }
+            if (newPass !== confirmPass) {
+                secErrorMsg.textContent = 'Xác nhận mật khẩu mới không trùng khớp!';
+                secError.classList.add('show');
+                return;
+            }
+
+            try {
+                await authManager.changeCredentials(oldPass, newUser, newPass);
+                toast('Cập nhật tài khoản quản trị thành công!', 'ok');
+                if ($('#topbarUserName')) $('#topbarUserName').textContent = newUser;
+                closeSettings();
+            } catch (err) {
+                secErrorMsg.textContent = err.message || 'Lỗi khi cập nhật mật khẩu!';
+                secError.classList.add('show');
+            }
+        });
+    }
+
+    // =========================================================
+    // KHỞI ĐỘNG DASHBOARD (CHỈ CHẠY SAU KHI ĐÃ ĐĂNG NHẬP)
+    // =========================================================
+    let dashboardBooted = false;
+    async function bootDashboard() {
+        if (dashboardBooted) return;
+        dashboardBooted = true;
+
         bindUI();
+        bindSecurityModalUI();
         state.mode = state.cfg.api && state.cfg.key && !state.cfg.demo ? 'live' : 'demo';
         updateModeUI();
         state.range = computeRange(state.preset);
@@ -1448,6 +1797,25 @@
         await loadData();
         // Tự làm mới mỗi 5 phút khi đang ở chế độ thật
         if (state.mode === 'live') setInterval(() => { if (document.visibilityState === 'visible' && state.tab !== 'realtime') loadData(); }, 300000);
+    }
+
+    // =========================================================
+    // KHỞI ĐỘNG TOÀN CỤC (KIỂM TRA QUYỀN ĐẦU TIÊN)
+    // =========================================================
+    async function init() {
+        bindAuthUI();
+
+        // Kiểm tra xem đã có phiên đăng nhập hợp lệ chưa
+        const session = await authManager.checkSession();
+        if (session) {
+            unlockDashboard(session);
+        } else {
+            // Chưa đăng nhập -> Chỉ hiển thị màn hình Auth Gate, khóa chặt bảng điều khiển
+            const gate = $('#authGate');
+            if (gate) gate.style.display = 'flex';
+            const app = $('#adminApp');
+            if (app) app.style.display = 'none';
+        }
     }
 
     if (!window.Chart) {

@@ -123,25 +123,33 @@ Mở file code cũ của bạn (thường là `Mã.gs` hoặc `Code.gs` đang ch
 
 ---
 
-### Bước 6: Cấu hình vào Website & Đăng nhập Dashboard
+### Bước 6: Đăng nhập Dashboard Quản trị & Cấu hình
 1. Mở file [js/tracker.js](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/js/tracker.js), dán URL Web App vào dòng 12 (`var ENDPOINT = '...'`).
 2. Mở Dashboard quản trị **https://hihoedu.com/admin/** (hoặc local [admin/index.html](file:///c:/Users/tktu2/OneDrive/Desktop/Oneedu/admin/index.html)):
-   - Bấm **Cài đặt kết nối**.
+   - **Đăng nhập quản trị viên**:
+     - Tên đăng nhập ban đầu: `admin`
+     - Mật khẩu ban đầu: `HihoEdu@2026`
+     *(Bạn có thể đổi tên đăng nhập và mật khẩu bất cứ lúc nào trong mục Cài đặt ➜ Đổi mật khẩu).*
+   - Sau khi vào bảng điều khiển, bấm **Cài đặt kết nối**.
    - Dán URL Web App và mã **`ADMIN_KEY`** vào.
    - Bấm **Lưu & kết nối**.
-
 
 ---
 
 ## 🛡️ TÍNH NĂNG BẢO MẬT & TỐI ƯU
 
-1. **Loại trừ truy cập của chính bạn**:
+1. **Cổng bảo mật đăng nhập Quản trị viên (Auth Gate)**:
+   - Toàn bộ trang quản trị `/admin/` được khóa an toàn. Không ai có thể vào thẳng hay xem dữ liệu nếu chưa đăng nhập đúng Tên đăng nhập & Mật khẩu.
+   - Mật khẩu được mã hóa một chiều bằng thuật toán **SHA-256** chuẩn quốc tế, không lưu dạng văn bản thô.
+   - Cơ chế chống tấn công dò mật khẩu (Anti-Brute Force): Tự động tạm khóa 60 giây nếu nhập sai quá 5 lần liên tiếp.
+   - Có thể đổi Mật khẩu và Tên đăng nhập nhanh chóng ngay trong giao diện Cài đặt.
+2. **Loại trừ truy cập của chính bạn**:
    - Khi bạn là chủ web vào kiểm tra website, bạn không muốn số liệu của mình làm sai lệch thống kê.
    - Trong trang Admin, bấm **Cài đặt kết nối** ➔ Bật công tắc **"Không tính lượt truy cập của tôi"**. Trình duyệt của bạn sẽ tự động bị bỏ qua khỏi mọi thống kê.
-2. **Bảo mật quyền Admin**:
-   - Người ngoài không thể xem được dữ liệu nếu không có `ADMIN_KEY`.
+3. **Bảo mật quyền Backend API**:
+   - Người ngoài không thể xem được dữ liệu nếu không có `ADMIN_KEY` từ Google Apps Script.
    - Nếu vô tình làm lộ key, trong Google Apps Script chỉ cần chạy hàm `resetAdminKey()` là hệ thống sẽ tự sinh key mới.
-3. **Hiệu năng siêu nhẹ**:
+4. **Hiệu năng siêu nhẹ**:
    - File theo dõi `js/tracker.js` có dung lượng cực nhẹ (~5KB), chạy bất đồng bộ (`defer`), gom nhóm dữ liệu (batching) và sử dụng `navigator.sendBeacon` để gửi âm thầm trong nền, cam kết không làm giảm điểm Google PageSpeed Insights.
 
 ---
